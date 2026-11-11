@@ -5,9 +5,7 @@ Dette projekt udvikles som en del af kandidatuddannelsen i Digitalisering og App
 
 Formålet er at udvikle en webbaseret løsning, der kan bidrage til at reducere madspild.
 
-Projektgruppe
-
-
+# Projektgruppe
 Philip Schack Poulsen
 [Gruppemedlem 2]
 [Gruppemedlem 3]
@@ -30,9 +28,9 @@ Database
 ??
 
 
-Projektstruktur
+#Projektstruktur
 madspild-webapp/
-│
+|  
 ├── frontend/
 ├── backend/
 ├── docs/│
