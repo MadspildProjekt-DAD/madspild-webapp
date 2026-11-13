@@ -7,7 +7,7 @@ Formålet er at udvikle en webbaseret løsning, der kan bidrage til at reducere 
 
 # Projektgruppe
 Philip Schack Poulsen
-[Gruppemedlem 2]
+[Halla Ehssan El-Jechy]
 [Gruppemedlem 3]
 [Gruppemedlem 4]
 [Gruppemedlem 5]
