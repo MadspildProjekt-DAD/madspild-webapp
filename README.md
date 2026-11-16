@@ -11,7 +11,7 @@ Halla Ehssan El-Jechy
 Thilla Thorup
 Huy Pete Le Nguyen
 Jennifer Celis
-[Gruppemedlem 6]
+Mille Høj Bagger Larsson
 
 Teknologier
 
