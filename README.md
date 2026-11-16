@@ -10,7 +10,7 @@ Philip Schack Poulsen
 Halla Ehssan El-Jechy
 Thilla Thorup
 Huy Pete Le Nguyen
-[Gruppemedlem 5]
+Jennifer Celis
 [Gruppemedlem 6]
 
 Teknologier
