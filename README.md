@@ -9,9 +9,9 @@ Formålet er at udvikle en webbaseret løsning, der kan bidrage til at reducere 
 Philip Schack Poulsen
 Halla Ehssan El-Jechy
 Thilla Thorup
+Huy Pete Le Nguyen
+Jennifer Celis
 Mille Høj Bagger Larsson
-[Gruppemedlem 5]
-[Gruppemedlem 6]
 
 Teknologier
 
