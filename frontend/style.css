@@ -1,6 +1,9 @@
 main {
     display: grid;
     gap: 2rem;
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 20px;
 }
 
 section {
@@ -10,13 +13,22 @@ section {
 table {
     border-collapse: collapse;
     width: 100%;
+   
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-th,
-td {
-    border: 1px solid #ccc;
+th{
+border: 1px solid #d2edd2;
     padding: 0.5rem;
     text-align: left;
+    background-color: rgb(70, 91, 62);
+}
+td {
+    border: 1px solid #d2edd2;
+    padding: 0.5rem;
+    text-align: left;
+    background-color: rgb(147, 167, 138);
 }
 
 dialog form {
@@ -26,4 +38,62 @@ dialog form {
 
 dialog::backdrop {
     background: rgb(0 0 0 / 40%);
+}
+
+body{
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: rgb(180, 203, 166);
+    color: rgb(8, 35, 20)
+}
+
+header {
+    background-color: rgb(5, 57, 11);
+    padding: 20px;
+}
+
+nav{
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+nav a{
+    color: rgb(204, 218, 201);
+    text-decoration:underline;/*lav understregning af currentpage*/
+    font-size: 17px;
+}
+
+h1{
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+button {/*kig på størrelser*/
+    background-color: green;
+    color: #f8fbf8;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-bottom: 25px;
+    display:flex;
+}
+
+button:hover{
+    background-color: #2d442d;
+}
+.add-product{
+   
+    justify-content: flex-end;
+    gap: 15px;
+    margin-left: auto;
+}
+.remove-product{
+   
+    justify-content: flex-end;
+    gap: 15px;
+    margin-left: 10px;
 }
