@@ -30,3 +30,13 @@ addProductForm.addEventListener("submit", (event) => {
 
     addProductDialog.close();
 });
+
+document.querySelectorAll(".remove-product").forEach((button) => {
+    button.addEventListener("click", () => {
+        const productList = button.closest("section").querySelector("tbody");
+
+        if (productList.rows.length > 0) {
+            productList.deleteRow(productList.rows.length - 1);
+        }
+    });
+}); 
