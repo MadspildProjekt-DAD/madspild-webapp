@@ -8,28 +8,37 @@ app.get("/", (req, res) => {
     res.send("serveren virker!!");
 });
 
-//hent produktdata fra openfoodfacts API
-app.get("/data", async (req, res) => {
-    try{
+app.get("/api/products/:barcode", async (req, res) => {
+    res.set("Access-Control-Allow-Origin", "*");
+
+    const { barcode } = req.params;
+    if (!/^\d{8,14}$/.test(barcode)) {
+        return res.status(400).json({ error: "Stregkoden skal bestå af 8-14 cifre." });
+    }
+
+    try {
         const response = await axios.get(
-            "https://world.openfoodfacts.org/api/v0/product/7622210449283.json",
+            `https://world.openfoodfacts.org/api/v3/product/${encodeURIComponent(barcode)}.json`,
             {
+                params: { fields: "product_name,brands" },
                 headers: {
-                    "User-Agent": "Halla"
+                    "User-Agent": "MadspildWebApp/1.0"
                 }
             }
         );
-        res.json({
-            navn: response.data.product.product_name,
-            mærke: response.data.product.brands,
-            ingredienser: response.data.product.ingredients_text,
-            billede: response.data.product.image_url
+
+        const product = response.data.product;
+        if (response.data.status !== "success" || !product?.product_name) {
+            return res.status(404).json({ error: "Varen blev ikke fundet." });
+        }
+
+        return res.json({
+            productName: product.product_name,
+            brands: product.brands || ""
         });
     } catch (error) {
-        console.error("Fejl:",error.message);
-        res.status(500).json({
-            fejl: error.message
-        })
+        console.error("Open Food Facts-opslag fejlede:", error.message);
+        return res.status(502).json({ error: "Open Food Facts kunne ikke kontaktes." });
     }
 });
 
