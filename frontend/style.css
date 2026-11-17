@@ -88,21 +88,20 @@ button {/*kig på størrelser*/
     cursor: pointer;
     font-size: 15px;
     margin-bottom: 25px;
-    display:flex;
 }
 
 button:hover{
     background-color: #2d442d;
 }
-.add-product{
-   
+
+.buttons{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
     justify-content: flex-end;
-    gap: 15px;
-    margin-left: auto;
 }
-.remove-product{
-   
-    justify-content: flex-end;
-    gap: 15px;
-    margin-left: 10px;
+
+p{
+    text-align: center;
+    font-size: 20px; 
 }
