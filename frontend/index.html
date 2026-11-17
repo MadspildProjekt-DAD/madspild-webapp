@@ -14,79 +14,87 @@
             <li><a href="Gode_Raad.html">Gode Råd</a></li>
         </ul>
     </nav>
-<h1>Mit Køleskab</h1>
-<p>Her kan du se hvilke madvarer du har i dit køleskab</p>
-<button> + </button>
-<button> - </button>
-<table>
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Holdbarhed</th>
-            <th>Åbnet</th>
-            <th>Spist</th>
-            <th>Smidt Ud</th>
-            <th>Dage Tilbage</th>
+<main>
+    <section aria-labelledby="fridge-heading">
+        <h1 id="fridge-heading">Mit Køleskab</h1>
+        <p>Her kan du se hvilke madvarer du har i dit køleskab</p>
+        <button class="add-product" type="button">+</button>
+        <button type="button" aria-label="Fjern madvare fra køleskabet">-</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Holdbarhed</th>
+                    <th>Åbnet</th>
+                    <th>Spist</th>
+                    <th>Smidt Ud</th>
+                    <th>Dage Tilbage</th>
+                </tr>
+            </thead>
+            <tbody id="fridge-products"></tbody>
+        </table>
+    </section>
 
-        </tr>
-    </thead>
-    <tbody id="Produkt-liste">
-        <!-- Madvarer vil blive tilføjet her dynamisk -->
-    </tbody>
-</table>
-<script src="app.js"> </script> 
-<h1>Min Fryser</h1>
-<p>Her kan du se hvilke madvarer du har i dit fryser</p>
-<button> + </button>
-<button> - </button>
-<table>
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Holdbarhed</th>
-            <th>Åbnet</th>
-            <th>Spist</th>
-            <th>Smidt Ud</th>
-            <th>Dage Tilbage</th>
+    <section aria-labelledby="freezer-heading">
+        <h1 id="freezer-heading">Min Fryser</h1>
+        <p>Her kan du se hvilke madvarer du har i din fryser</p>
+        <button class="add-product" type="button">+</button>
+        <button type="button" aria-label="Fjern madvare fra fryseren">-</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Holdbarhed</th>
+                    <th>Åbnet</th>
+                    <th>Spist</th>
+                    <th>Smidt Ud</th>
+                    <th>Dage Tilbage</th>
+                </tr>
+            </thead>
+            <tbody id="freezer-products"></tbody>
+        </table>
+    </section>
 
-        </tr>
-    </thead>
-    <tbody id="Produkt-liste">
-        <!-- Madvarer vil blive tilføjet her dynamisk -->
-    </tbody>
-</table>
-<script src="app.js"> </script> 
+    <section aria-labelledby="pantry-heading">
+        <h1 id="pantry-heading">Mine Tørvarer</h1>
+        <p>Her kan du se hvilke madvarer du har i dit skab</p>
+        <button class="add-product" type="button">+</button>
+        <button type="button" aria-label="Fjern madvare fra skabet">-</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Holdbarhed</th>
+                    <th>Åbnet</th>
+                    <th>Spist</th>
+                    <th>Smidt Ud</th>
+                    <th>Dage Tilbage</th>
+                </tr>
+            </thead>
+            <tbody id="pantry-products"></tbody>
+        </table>
+    </section>
+</main>
 
+<dialog id="add-product-dialog" aria-labelledby="dialog-heading">
+    <form id="add-product-form">
+        <h2 id="dialog-heading">Hvor skal madvaren gemmes?</h2>
+        <label>
+            <input type="radio" name="storage" value="fridge" required>
+            Kølevarer
+        </label>
+        <label>
+            <input type="radio" name="storage" value="freezer">
+            Frostvarer
+        </label>
+        <label>
+            <input type="radio" name="storage" value="pantry">
+            Tørvarer
+        </label>
+        <button type="submit">Godkend</button>
+    </form>
+</dialog>
 
-<h1>Mine Tørvarer</h1>
-<p>Her kan du se hvilke madvarer du har i dit skab</p>
-<button> + </button>
-<button> - </button>
-<table>
-    <thead>
-        <tr>
-            <th>Navn</th>
-            <th>Holdbarhed</th>
-            <th>Åbnet</th>
-            <th>Spist</th>
-            <th>Smidt Ud</th>
-            <th>Dage Tilbage</th>
-
-        </tr>
-    </thead>
-    <tbody id="Produkt-liste">
-        <!-- Madvarer vil blive tilføjet her dynamisk -->
-    </tbody>
-</table>
-<script src="app.js"> </script> 
-
-
-
+<script src="app.js" defer></script>
 </body>
-
-  
-
-
-
-
 </html>
