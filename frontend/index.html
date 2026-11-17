@@ -20,7 +20,7 @@
         <h1 id="fridge-heading">Mit Køleskab</h1>
         <p>Her kan du se hvilke madvarer du har i dit køleskab</p>
         <button class="add-product" type="button">+</button>
-        <button type="button" aria-label="Fjern madvare fra køleskabet">-</button>
+        <button class="remove-product" type="button" aria-label="Fjern madvare fra køleskabet">-</button>
         <table>
             <thead>
                 <tr>
@@ -40,7 +40,7 @@
         <h1 id="freezer-heading">Min Fryser</h1>
         <p>Her kan du se hvilke madvarer du har i din fryser</p>
         <button class="add-product" type="button">+</button>
-        <button type="button" aria-label="Fjern madvare fra fryseren">-</button>
+        <button class="remove-product" type="button" aria-label="Fjern madvare fra fryseren">-</button>
         <table>
             <thead>
                 <tr>
@@ -60,7 +60,7 @@
         <h1 id="pantry-heading">Mine Tørvarer</h1>
         <p>Her kan du se hvilke madvarer du har i dit skab</p>
         <button class="add-product" type="button">+</button>
-        <button type="button" aria-label="Fjern madvare fra skabet">-</button>
+        <button class="remove-product" type="button" aria-label="Fjern madvare fra skabet">-</button>
         <table>
             <thead>
                 <tr>
@@ -79,23 +79,38 @@
 
 <dialog id="add-product-dialog" aria-labelledby="dialog-heading">
     <form id="add-product-form">
-        <h2 id="dialog-heading">Hvor skal madvaren gemmes?</h2>
-        <label>
-            <input type="radio" name="storage" value="fridge" required>
-            Kølevarer
-        </label>
-        <label>
-            <input type="radio" name="storage" value="freezer">
-            Frostvarer
-        </label>
-        <label>
-            <input type="radio" name="storage" value="pantry">
-            Tørvarer
-        </label>
+        <h2 id="dialog-heading">Tilføj en madvare</h2>
+        <label for="barcode">Stregkode</label>
+        <input id="barcode" name="barcode" type="text" inputmode="numeric" autocomplete="off" placeholder="Indtast stregkode">
+        <div>
+            <button id="lookup-product" type="button">Find vare</button>
+            <button id="scan-barcode" type="button">Scan med kamera</button>
+        </div>
+        <video id="barcode-video" autoplay playsinline hidden></video>
+        <p id="product-lookup-status" role="status" aria-live="polite"></p>
+        <label for="product-name">Varenavn</label>
+        <input id="product-name" name="productName" type="text" required>
+
+        <fieldset>
+            <legend>Hvor skal madvaren gemmes?</legend>
+            <label>
+                <input type="radio" name="storage" value="fridge" required>
+                Kølevarer
+            </label>
+            <label>
+                <input type="radio" name="storage" value="freezer">
+                Frostvarer
+            </label>
+            <label>
+                <input type="radio" name="storage" value="pantry">
+                Tørvarer
+            </label>
+        </fieldset>
         <button type="submit">Godkend</button>
     </form>
 </dialog>
 
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>
