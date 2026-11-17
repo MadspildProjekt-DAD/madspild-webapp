@@ -165,6 +165,26 @@ addProductForm.addEventListener("submit", (event) => {
         row.insertCell();
     }
 
+    // NYT: Åbnet (celle 2)
+    const openedCheckbox = document.createElement("input");
+    openedCheckbox.type = "checkbox";
+    row.cells[2].appendChild(openedCheckbox);
+
+    openedCheckbox.addEventListener("change", () => {
+        row.dataset.opened = openedCheckbox.checked;
+        console.log("Åbnet:", row.dataset.opened);
+    });
+
+    // NYT: Spist (celle 3)
+    const eatenCheckbox = document.createElement("input");
+    eatenCheckbox.type = "checkbox";
+    row.cells[3].appendChild(eatenCheckbox);
+
+    eatenCheckbox.addEventListener("change", () => {
+        row.dataset.eaten = eatenCheckbox.checked;
+        console.log("Spist:", row.dataset.eaten);
+    });
+
     addProductDialog.close();
 });
 
