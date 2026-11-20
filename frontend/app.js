@@ -1,7 +1,5 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
 const throwOutDialog = document.querySelector("#throw-out-dialog");
-const exitDialogButton = document.querySelector("#exit-dialog");
-const closeDialogButton = document.querySelector("#close-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
@@ -218,12 +216,20 @@ scannerButton.addEventListener("click", () => {
 
     startBarcodeScanner();
 });
+
 addProductDialog.addEventListener("close", () => {
     stopBarcodeScanner();
     editingRow = null;
 });
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
+});
+
+document.querySelectorAll(".exit").forEach((button) => {
+    button.addEventListener("click", () => {
+        button.closest("dialog").close();
+    });
 });
 
 document.querySelectorAll(".add-product").forEach((button) => {
@@ -235,11 +241,7 @@ document.querySelectorAll(".add-product").forEach((button) => {
         addProductDialog.showModal();
        
     });
- exitDialogButton.addEventListener("click", function () {
-        addProductDialog.close();
-        });
 });
-
 
 addProductForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -347,9 +349,6 @@ thrownOutCheckbox.addEventListener("change", function () {
     row.dataset.thrownOut = thrownOutCheckbox.checked;
     if (thrownOutCheckbox.checked) {
         throwOutDialog.showModal();
-        closeDialogButton.addEventListener("click", function () {
-        throwOutDialog.close();
-});
     }
 });
 
