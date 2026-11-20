@@ -2,6 +2,7 @@ const addProductDialog = document.querySelector("#add-product-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
+const expiryDateInput = document.querySelector("#product-expiry");
 const lookupButton = document.querySelector("#lookup-product");
 const scannerButton = document.querySelector("#scan-barcode");
 const barcodeVideo = document.querySelector("#barcode-video");
@@ -14,6 +15,15 @@ const productLists = {
 };
 let scannerControls;
 let scannerActive = false;
+
+function getDaysUntilExpiry(expiryDate) {
+    const [year, month, day] = expiryDate.split("-").map(Number);
+    const expiry = Date.UTC(year, month - 1, day);
+    const now = new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+    return Math.round((expiry - today) / 86400000);
+}
 
 function stopBarcodeScanner() {
     scannerActive = false;
@@ -67,7 +77,6 @@ async function lookupProduct() {
         lookupButton.disabled = false;
     }
 }
-
 async function startBarcodeScanner() {
     if (!navigator.mediaDevices?.getUserMedia) {
         lookupStatus.textContent = "Browseren giver ikke adgang til kameraet. Åbn siden via localhost eller HTTPS, eller indtast stregkoden manuelt.";
