@@ -1,5 +1,7 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
 const throwOutDialog = document.querySelector("#throw-out-dialog");
+const exitDialogButton = document.querySelector("#exit-dialog");
+const closeDialogButton = document.querySelector("#close-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
@@ -231,8 +233,13 @@ document.querySelectorAll(".add-product").forEach((button) => {
         lookupStatus.textContent = "";
         stopBarcodeScanner();
         addProductDialog.showModal();
+       
     });
+ exitDialogButton.addEventListener("click", function () {
+        addProductDialog.close();
+        });
 });
+
 
 addProductForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -340,11 +347,15 @@ thrownOutCheckbox.addEventListener("change", function () {
     row.dataset.thrownOut = thrownOutCheckbox.checked;
     if (thrownOutCheckbox.checked) {
         throwOutDialog.showModal();
+        closeDialogButton.addEventListener("click", function () {
+        throwOutDialog.close();
+});
     }
 });
 
     addProductDialog.close();
 });
+
 
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {
