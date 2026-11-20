@@ -99,6 +99,9 @@
         <input id="product-name" name="productName" type="text" required>
         <label for="product-expiry">Udløbsdato</label>
         <input id="product-expiry" name="expiryDate" type="date">
+        <label for="opened-shelf-life">Holdbarhed efter åbning (dage)</label>
+        <input id="opened-shelf-life" name="openedShelfLifeDays" type="number" min="0" step="1" placeholder="Fx 7">
+        <small>Hvis feltet står tomt, bruges 3 dage.</small>
 
         <fieldset>
             <legend>Hvor skal madvaren gemmes?</legend>

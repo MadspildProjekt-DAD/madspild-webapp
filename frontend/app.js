@@ -15,6 +15,18 @@ const productLists = {
 };
 let scannerControls;
 let scannerActive = false;
+const DEFAULT_OPENED_SHELF_LIFE_DAYS = 3;
+
+function getDateAfterDays(days) {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + days);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
 function getDaysUntilExpiry(expiryDate) {
     const [year, month, day] = expiryDate.split("-").map(Number);
@@ -23,6 +35,12 @@ function getDaysUntilExpiry(expiryDate) {
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
 
     return Math.round((expiry - today) / 86400000);
+}
+
+function updateDaysUntilExpiry(row) {
+    row.cells[5].textContent = row.dataset.expiryDate
+        ? getDaysUntilExpiry(row.dataset.expiryDate)
+        : "";
 }
 
 function stopBarcodeScanner() {
@@ -50,7 +68,6 @@ async function lookupProduct() {
 
     lookupButton.disabled = true;
     lookupStatus.textContent = "Søger efter varen...";
-
     try {
         const response = await fetch(
             `${backendUrl}/api/products/${encodeURIComponent(barcode)}`
@@ -173,6 +190,11 @@ addProductForm.addEventListener("submit", (event) => {
     for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
         row.insertCell();
     }
+    row.dataset.openedShelfLifeDays = new FormData(addProductForm).get("openedShelfLifeDays");
+    row.dataset.originalExpiryDate = expiryDateInput.value;
+    row.dataset.expiryDate = row.dataset.originalExpiryDate;
+    row.cells[1].textContent = row.dataset.expiryDate;
+    updateDaysUntilExpiry(row);
 
     // "Åbnet" knap funktion (celle 2)
     const openedCheckbox = document.createElement("input");
@@ -181,6 +203,18 @@ addProductForm.addEventListener("submit", (event) => {
 
     openedCheckbox.addEventListener("change", () => {
         row.dataset.opened = openedCheckbox.checked;
+        if (openedCheckbox.checked) {
+            // Use the entered days, or the default when the field is blank.
+            const enteredDays = row.dataset.openedShelfLifeDays;
+            const shelfLifeDays = enteredDays === ""
+                ? DEFAULT_OPENED_SHELF_LIFE_DAYS
+                : Number(enteredDays);
+            row.dataset.expiryDate = getDateAfterDays(shelfLifeDays);
+        } else {
+            row.dataset.expiryDate = row.dataset.originalExpiryDate;
+        }
+        row.cells[1].textContent = row.dataset.expiryDate;
+        updateDaysUntilExpiry(row);
         console.log("Åbnet:", row.dataset.opened);
     });
 
