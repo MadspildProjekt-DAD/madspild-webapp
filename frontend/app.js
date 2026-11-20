@@ -2,6 +2,7 @@ const addProductDialog = document.querySelector("#add-product-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
+const expiryDateInput = document.querySelector("#product-expiry");
 const lookupButton = document.querySelector("#lookup-product");
 const scannerButton = document.querySelector("#scan-barcode");
 const barcodeVideo = document.querySelector("#barcode-video");
@@ -14,6 +15,15 @@ const productLists = {
 };
 let scannerControls;
 let scannerActive = false;
+
+function getDaysUntilExpiry(expiryDate) {
+    const [year, month, day] = expiryDate.split("-").map(Number);
+    const expiry = Date.UTC(year, month - 1, day);
+    const now = new Date();
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+    return Math.round((expiry - today) / 86400000);
+}
 
 function stopBarcodeScanner() {
     scannerActive = false;
@@ -162,6 +172,21 @@ addProductForm.addEventListener("submit", (event) => {
     row.insertCell().textContent = productNameInput.value.trim();
     for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
         row.insertCell();
+    }
+
+    if (expiryDateInput.value) {
+        const [year, month, day] = expiryDateInput.value.split("-").map(Number);
+        row.cells[1].textContent = new Date(year, month - 1, day).toLocaleDateString("da-DK");
+
+        const daysUntilExpiry = getDaysUntilExpiry(expiryDateInput.value);
+        row.cells[5].textContent = daysUntilExpiry < 0
+            ? `Udløbet for ${Math.abs(daysUntilExpiry)} dage siden`
+            : daysUntilExpiry === 0
+                ? "Udløber i dag"
+                : daysUntilExpiry;
+    } else {
+        row.cells[1].textContent = "Ikke angivet";
+        row.cells[5].textContent = "—";
     }
 
     // NYT: Åbnet (celle 2)
