@@ -43,6 +43,10 @@ dialog video {
     max-width: 100%;
 }
 
+#barcode-video {
+    transform: scaleX(-1);
+}
+
 dialog::backdrop {
     background: rgb(0 0 0 / 40%);
 }
