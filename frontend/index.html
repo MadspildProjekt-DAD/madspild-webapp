@@ -16,6 +16,16 @@
     </nav>
 </header>
 <main>
+    <div class="sort-controls">
+        <label for="sort-order">Sortér efter</label>
+        <select id="sort-order">
+            <option value="name">Navn (A-Å)</option>
+            <option value="expiry-asc">Udløbsdato (snarest først)</option>
+            <option value="expiry-desc">Udløbsdato (senest først)</option>
+        </select>
+        <button id="sort-products" type="button">Sortér</button>
+    </div>
+
     <section aria-labelledby="fridge-heading">
         <h1 id="fridge-heading">Mit Køleskab</h1>
         <p>Her kan du se hvilke madvarer du har i dit køleskab</p>

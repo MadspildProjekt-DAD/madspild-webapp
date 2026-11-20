@@ -8,6 +8,8 @@ const lookupButton = document.querySelector("#lookup-product");
 const scannerButton = document.querySelector("#scan-barcode");
 const barcodeVideo = document.querySelector("#barcode-video");
 const lookupStatus = document.querySelector("#product-lookup-status");
+const sortOrderSelect = document.querySelector("#sort-order");
+const sortProductsButton = document.querySelector("#sort-products");
 const backendUrl = "http://localhost:3000";
 const productLists = {
     fridge: document.querySelector("#fridge-products"),
@@ -42,6 +44,33 @@ function updateDaysUntilExpiry(row) {
     row.cells[5].textContent = row.dataset.expiryDate
         ? getDaysUntilExpiry(row.dataset.expiryDate)
         : "";
+}
+
+function sortProductTables(sortOrder) {
+    Object.values(productLists).forEach((productList) => {
+        const rows = Array.from(productList.rows);
+        rows.sort((rowA, rowB) => {
+            if (sortOrder === "name") {
+                return rowA.cells[0].textContent.localeCompare(
+                    rowB.cells[0].textContent,
+                    "da",
+                    { sensitivity: "base" }
+                );
+            }
+
+            const expiryA = rowA.dataset.expiryDate || "";
+            const expiryB = rowB.dataset.expiryDate || "";
+            if (!expiryA || !expiryB) {
+                return expiryA ? -1 : expiryB ? 1 : 0;
+            }
+
+            return sortOrder === "expiry-desc"
+                ? expiryB.localeCompare(expiryA)
+                : expiryA.localeCompare(expiryB);
+        });
+
+        rows.forEach((row) => productList.appendChild(row));
+    });
 }
 
 function stopBarcodeScanner() {
@@ -166,6 +195,9 @@ scannerButton.addEventListener("click", () => {
     startBarcodeScanner();
 });
 addProductDialog.addEventListener("close", stopBarcodeScanner);
+sortProductsButton.addEventListener("click", () => {
+    sortProductTables(sortOrderSelect.value);
+});
 
 document.querySelectorAll(".add-product").forEach((button) => {
     button.addEventListener("click", () => {
