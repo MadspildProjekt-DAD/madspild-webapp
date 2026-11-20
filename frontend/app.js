@@ -4,6 +4,7 @@ const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
 const expiryDateInput = document.querySelector("#product-expiry");
+const openedShelfLifeInput = document.querySelector("#opened-shelf-life");
 const lookupButton = document.querySelector("#lookup-product");
 const scannerButton = document.querySelector("#scan-barcode");
 const barcodeVideo = document.querySelector("#barcode-video");
@@ -18,6 +19,7 @@ const productLists = {
 };
 let scannerControls;
 let scannerActive = false;
+let editingRow = null;
 const DEFAULT_OPENED_SHELF_LIFE_DAYS = 3;
 
 function getDateAfterDays(days) {
@@ -51,8 +53,8 @@ function sortProductTables(sortOrder) {
         const rows = Array.from(productList.rows);
         rows.sort((rowA, rowB) => {
             if (sortOrder === "name") {
-                return rowA.cells[0].textContent.localeCompare(
-                    rowB.cells[0].textContent,
+                return rowA.dataset.productName.localeCompare(
+                    rowB.dataset.productName,
                     "da",
                     { sensitivity: "base" }
                 );
@@ -71,6 +73,26 @@ function sortProductTables(sortOrder) {
 
         rows.forEach((row) => productList.appendChild(row));
     });
+}
+
+function openProductEditor(row) {
+    editingRow = row;
+    addProductForm.reset();
+    lookupStatus.textContent = "";
+    stopBarcodeScanner();
+
+    productNameInput.value = row.dataset.productName;
+    expiryDateInput.value = row.dataset.originalExpiryDate;
+    openedShelfLifeInput.value = row.dataset.openedShelfLifeDays;
+
+    const storage = Object.entries(productLists).find(([, productList]) =>
+        productList === row.parentElement
+    )?.[0];
+    addProductForm.querySelectorAll('input[name="storage"]').forEach((input) => {
+        input.checked = input.value === storage;
+    });
+
+    addProductDialog.showModal();
 }
 
 function stopBarcodeScanner() {
@@ -194,7 +216,10 @@ scannerButton.addEventListener("click", () => {
 
     startBarcodeScanner();
 });
-addProductDialog.addEventListener("close", stopBarcodeScanner);
+addProductDialog.addEventListener("close", () => {
+    stopBarcodeScanner();
+    editingRow = null;
+});
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
 });
@@ -202,6 +227,7 @@ sortProductsButton.addEventListener("click", () => {
 document.querySelectorAll(".add-product").forEach((button) => {
     button.addEventListener("click", () => {
         addProductForm.reset();
+        editingRow = null;
         lookupStatus.textContent = "";
         stopBarcodeScanner();
         addProductDialog.showModal();
@@ -218,8 +244,52 @@ addProductForm.addEventListener("submit", (event) => {
         return;
     }
 
+    if (editingRow) {
+        const row = editingRow;
+        if (row.parentElement !== productList) {
+            productList.appendChild(row);
+        }
+
+        row.dataset.productName = productNameInput.value.trim();
+        row.cells[0].querySelector(".product-name").textContent = row.dataset.productName;
+        row.cells[0].querySelector(".edit-product").setAttribute(
+            "aria-label",
+            `Rediger ${row.dataset.productName}`
+        );
+        row.dataset.openedShelfLifeDays = new FormData(addProductForm).get("openedShelfLifeDays");
+        row.dataset.originalExpiryDate = expiryDateInput.value;
+        row.dataset.expiryDate = row.dataset.opened === "true"
+            ? getDateAfterDays(
+                row.dataset.openedShelfLifeDays === ""
+                    ? DEFAULT_OPENED_SHELF_LIFE_DAYS
+                    : Number(row.dataset.openedShelfLifeDays)
+            )
+            : row.dataset.originalExpiryDate;
+        row.cells[1].textContent = row.dataset.expiryDate;
+        updateDaysUntilExpiry(row);
+
+        editingRow = null;
+        addProductDialog.close();
+        return;
+    }
+
     const row = productList.insertRow();
-    row.insertCell().textContent = productNameInput.value.trim();
+    const nameCell = row.insertCell();
+    row.dataset.productName = productNameInput.value.trim();
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "edit-product";
+    editButton.textContent = "✎";
+    editButton.setAttribute("aria-label", `Rediger ${row.dataset.productName}`);
+    editButton.addEventListener("click", () => openProductEditor(row));
+    nameCell.appendChild(editButton);
+
+    const nameText = document.createElement("span");
+    nameText.className = "product-name";
+    nameText.textContent = row.dataset.productName;
+    nameCell.appendChild(nameText);
+
     for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
         row.insertCell();
     }
