@@ -165,7 +165,7 @@ addProductForm.addEventListener("submit", (event) => {
         row.insertCell();
     }
 
-    // NYT: Åbnet (celle 2)
+    // "Åbnet" knap funktion (celle 2)
     const openedCheckbox = document.createElement("input");
     openedCheckbox.type = "checkbox";
     row.cells[2].appendChild(openedCheckbox);
@@ -175,7 +175,7 @@ addProductForm.addEventListener("submit", (event) => {
         console.log("Åbnet:", row.dataset.opened);
     });
 
-    // NYT: Spist (celle 3)
+    // "Spist" knap funktion (celle 3)
     const eatenCheckbox = document.createElement("input");
     eatenCheckbox.type = "checkbox";
     row.cells[3].appendChild(eatenCheckbox);
@@ -184,6 +184,15 @@ addProductForm.addEventListener("submit", (event) => {
         row.dataset.eaten = eatenCheckbox.checked;
         console.log("Spist:", row.dataset.eaten);
     });
+
+    // "Smidt Ud" knap funktion (celle 4)
+    const thrownOutCheckbox = document.createElement("input");
+thrownOutCheckbox.type = "checkbox";
+row.cells[4].appendChild(thrownOutCheckbox);
+
+thrownOutCheckbox.addEventListener("change", () => {
+    row.dataset.thrownOut = thrownOutCheckbox.checked;
+});
 
     addProductDialog.close();
 });
@@ -196,4 +205,4 @@ document.querySelectorAll(".remove-product").forEach((button) => {
             productList.deleteRow(productList.rows.length - 1);
         }
     });
-}); 
+});
