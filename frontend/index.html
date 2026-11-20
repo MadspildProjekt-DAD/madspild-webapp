@@ -118,7 +118,31 @@
         <button type="submit">Godkend</button>
     </form>
 </dialog>
-
+<dialog id="throw-out-dialog" aria-labelledby="throw-out-dialog-heading">
+    <form id="throw-out-form">
+        <h2 id="throw-out-dialog-heading">Smid madvare ud</h2>
+        <fieldset>
+        <legend>Hvorfor vil du smide denne madvare ud?</legend>
+        <label>
+            <input type="radio" name="reason" value="too-old" required>
+            Udløbsdatoen er overskredet
+        </label>
+        <label>
+            <input type="radio" name="reason" value="dont-like">
+            Jeg kan ikke lide den
+        </label>
+        <label>
+            <input type="radio" name="reason" value="spoiled">
+            Maden er blevet dårlig
+        </label>
+        <label>
+            <input type="radio" name="reason" value="other">
+            Anden årsag
+        </label>
+        </fieldset>
+         <button type="submit">Smid ud</button>
+    </form>
+</dialog>
 <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js" defer></script>
 <script src="app.js" defer></script>
 </body>
