@@ -1,10 +1,33 @@
 const express = require('express');
 const axios = require('axios');
 
+//js
+
+const session = require('express-session');
+const path = require('path');
+
+
 const app = express();
 
+// ---------- NEW: configuration for login ----------
+app.use(express.json());
+app.use(session({
+    secret: 'madspild-hemmelighed',
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Muestra las páginas de la carpeta frontend
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Usuario de prueba (más adelante: base de datos)
+const brugere = [
+    { brugernavn: 'test', adgangskode: '1234' }
+];
+// -----------------------------------------------------
+
 //test af serveren
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
     res.send("serveren virker!!");
 });
 
@@ -41,6 +64,28 @@ app.get("/api/products/:barcode", async (req, res) => {
         return res.status(502).json({ error: "Open Food Facts kunne ikke kontaktes." });
     }
 });
+
+// ---------- NUEVO: Log ind / Log ud ----------
+app.post("/api/login", (req, res) => {
+    const { brugernavn, adgangskode } = req.body;
+    const bruger = brugere.find(
+        b => b.brugernavn === brugernavn && b.adgangskode === adgangskode
+    );
+    if (!bruger) {
+        return res.status(401).json({ fejl: "Forkert brugernavn eller adgangskode" });
+    }
+    req.session.bruger = bruger.brugernavn;
+    res.json({ bruger: bruger.brugernavn });
+});
+
+app.post("/api/logout", (req, res) => {
+    req.session.destroy(() => res.json({ ok: true }));
+});
+
+app.get("/api/me", (req, res) => {
+    res.json({ bruger: req.session.bruger || null });
+});
+// --------------------------------------------
 
 app.listen(3000, () => {
     console.log("Serveren kører på port 3000");
