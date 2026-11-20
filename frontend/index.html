@@ -29,6 +29,16 @@
     </nav>
 </header>
 <main>
+    <div class="sort-controls">
+        <label for="sort-order">Sortér efter</label>
+        <select id="sort-order">
+            <option value="name">Navn (A-Å)</option>
+            <option value="expiry-asc">Udløbsdato (snarest først)</option>
+            <option value="expiry-desc">Udløbsdato (senest først)</option>
+        </select>
+        <button id="sort-products" type="button">Sortér</button>
+    </div>
+
     <section aria-labelledby="fridge-heading">
         <h1 id="fridge-heading">Mit Køleskab</h1>
         <p>Her kan du se hvilke madvarer du har i dit køleskab</p>
@@ -112,6 +122,9 @@
         <input id="product-name" name="productName" type="text" required>
         <label for="product-expiry">Udløbsdato</label>
         <input id="product-expiry" name="expiryDate" type="date">
+        <label for="opened-shelf-life">Holdbarhed efter åbning (dage)</label>
+        <input id="opened-shelf-life" name="openedShelfLifeDays" type="number" min="0" step="1" placeholder="Fx 7">
+        <small>Hvis feltet står tomt, bruges 3 dage.</small>
 
         <fieldset>
             <legend>Hvor skal madvaren gemmes?</legend>
@@ -129,6 +142,7 @@
             </label>
         </fieldset>
         <button type="submit">Godkend</button>
+    <button id="exit-dialog" class="exit" aria-label="Luk">x</button>
     </form>
 </dialog>
 <dialog id="throw-out-dialog" aria-labelledby="throw-out-dialog-heading">
@@ -155,6 +169,7 @@
         </fieldset>
          <button type="submit">Smid ud</button>
     </form>
+    <button id="close-dialog" class="exit" aria-label="Luk">x</button>
 </dialog>
 <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js" defer></script>
 <script src="app.js" defer></script>

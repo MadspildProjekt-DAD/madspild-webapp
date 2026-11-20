@@ -1,12 +1,18 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
+const throwOutDialog = document.querySelector("#throw-out-dialog");
+const exitDialogButton = document.querySelector("#exit-dialog");
+const closeDialogButton = document.querySelector("#close-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
 const expiryDateInput = document.querySelector("#product-expiry");
+const openedShelfLifeInput = document.querySelector("#opened-shelf-life");
 const lookupButton = document.querySelector("#lookup-product");
 const scannerButton = document.querySelector("#scan-barcode");
 const barcodeVideo = document.querySelector("#barcode-video");
 const lookupStatus = document.querySelector("#product-lookup-status");
+const sortOrderSelect = document.querySelector("#sort-order");
+const sortProductsButton = document.querySelector("#sort-products");
 const backendUrl = "http://localhost:3000";
 const productLists = {
     fridge: document.querySelector("#fridge-products"),
@@ -15,6 +21,19 @@ const productLists = {
 };
 let scannerControls;
 let scannerActive = false;
+let editingRow = null;
+const DEFAULT_OPENED_SHELF_LIFE_DAYS = 3;
+
+function getDateAfterDays(days) {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + days);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 
 function getDaysUntilExpiry(expiryDate) {
     const [year, month, day] = expiryDate.split("-").map(Number);
@@ -23,6 +42,59 @@ function getDaysUntilExpiry(expiryDate) {
     const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
 
     return Math.round((expiry - today) / 86400000);
+}
+
+function updateDaysUntilExpiry(row) {
+    row.cells[5].textContent = row.dataset.expiryDate
+        ? getDaysUntilExpiry(row.dataset.expiryDate)
+        : "";
+}
+
+function sortProductTables(sortOrder) {
+    Object.values(productLists).forEach((productList) => {
+        const rows = Array.from(productList.rows);
+        rows.sort((rowA, rowB) => {
+            if (sortOrder === "name") {
+                return rowA.dataset.productName.localeCompare(
+                    rowB.dataset.productName,
+                    "da",
+                    { sensitivity: "base" }
+                );
+            }
+
+            const expiryA = rowA.dataset.expiryDate || "";
+            const expiryB = rowB.dataset.expiryDate || "";
+            if (!expiryA || !expiryB) {
+                return expiryA ? -1 : expiryB ? 1 : 0;
+            }
+
+            return sortOrder === "expiry-desc"
+                ? expiryB.localeCompare(expiryA)
+                : expiryA.localeCompare(expiryB);
+        });
+
+        rows.forEach((row) => productList.appendChild(row));
+    });
+}
+
+function openProductEditor(row) {
+    editingRow = row;
+    addProductForm.reset();
+    lookupStatus.textContent = "";
+    stopBarcodeScanner();
+
+    productNameInput.value = row.dataset.productName;
+    expiryDateInput.value = row.dataset.originalExpiryDate;
+    openedShelfLifeInput.value = row.dataset.openedShelfLifeDays;
+
+    const storage = Object.entries(productLists).find(([, productList]) =>
+        productList === row.parentElement
+    )?.[0];
+    addProductForm.querySelectorAll('input[name="storage"]').forEach((input) => {
+        input.checked = input.value === storage;
+    });
+
+    addProductDialog.showModal();
 }
 
 function stopBarcodeScanner() {
@@ -50,7 +122,6 @@ async function lookupProduct() {
 
     lookupButton.disabled = true;
     lookupStatus.textContent = "Søger efter varen...";
-
     try {
         const response = await fetch(
             `${backendUrl}/api/products/${encodeURIComponent(barcode)}`
@@ -147,16 +218,28 @@ scannerButton.addEventListener("click", () => {
 
     startBarcodeScanner();
 });
-addProductDialog.addEventListener("close", stopBarcodeScanner);
+addProductDialog.addEventListener("close", () => {
+    stopBarcodeScanner();
+    editingRow = null;
+});
+sortProductsButton.addEventListener("click", () => {
+    sortProductTables(sortOrderSelect.value);
+});
 
 document.querySelectorAll(".add-product").forEach((button) => {
     button.addEventListener("click", () => {
         addProductForm.reset();
+        editingRow = null;
         lookupStatus.textContent = "";
         stopBarcodeScanner();
         addProductDialog.showModal();
+       
     });
+ exitDialogButton.addEventListener("click", function () {
+        addProductDialog.close();
+        });
 });
+
 
 addProductForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -168,11 +251,60 @@ addProductForm.addEventListener("submit", (event) => {
         return;
     }
 
+    if (editingRow) {
+        const row = editingRow;
+        if (row.parentElement !== productList) {
+            productList.appendChild(row);
+        }
+
+        row.dataset.productName = productNameInput.value.trim();
+        row.cells[0].querySelector(".product-name").textContent = row.dataset.productName;
+        row.cells[0].querySelector(".edit-product").setAttribute(
+            "aria-label",
+            `Rediger ${row.dataset.productName}`
+        );
+        row.dataset.openedShelfLifeDays = new FormData(addProductForm).get("openedShelfLifeDays");
+        row.dataset.originalExpiryDate = expiryDateInput.value;
+        row.dataset.expiryDate = row.dataset.opened === "true"
+            ? getDateAfterDays(
+                row.dataset.openedShelfLifeDays === ""
+                    ? DEFAULT_OPENED_SHELF_LIFE_DAYS
+                    : Number(row.dataset.openedShelfLifeDays)
+            )
+            : row.dataset.originalExpiryDate;
+        row.cells[1].textContent = row.dataset.expiryDate;
+        updateDaysUntilExpiry(row);
+
+        editingRow = null;
+        addProductDialog.close();
+        return;
+    }
+
     const row = productList.insertRow();
-    row.insertCell().textContent = productNameInput.value.trim();
+    const nameCell = row.insertCell();
+    row.dataset.productName = productNameInput.value.trim();
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "edit-product";
+    editButton.textContent = "✎";
+    editButton.setAttribute("aria-label", `Rediger ${row.dataset.productName}`);
+    editButton.addEventListener("click", () => openProductEditor(row));
+    nameCell.appendChild(editButton);
+
+    const nameText = document.createElement("span");
+    nameText.className = "product-name";
+    nameText.textContent = row.dataset.productName;
+    nameCell.appendChild(nameText);
+
     for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
         row.insertCell();
     }
+    row.dataset.openedShelfLifeDays = new FormData(addProductForm).get("openedShelfLifeDays");
+    row.dataset.originalExpiryDate = expiryDateInput.value;
+    row.dataset.expiryDate = row.dataset.originalExpiryDate;
+    row.cells[1].textContent = row.dataset.expiryDate;
+    updateDaysUntilExpiry(row);
 
     // "Åbnet" knap funktion (celle 2)
     const openedCheckbox = document.createElement("input");
@@ -181,6 +313,18 @@ addProductForm.addEventListener("submit", (event) => {
 
     openedCheckbox.addEventListener("change", () => {
         row.dataset.opened = openedCheckbox.checked;
+        if (openedCheckbox.checked) {
+            // Use the entered days, or the default when the field is blank.
+            const enteredDays = row.dataset.openedShelfLifeDays;
+            const shelfLifeDays = enteredDays === ""
+                ? DEFAULT_OPENED_SHELF_LIFE_DAYS
+                : Number(enteredDays);
+            row.dataset.expiryDate = getDateAfterDays(shelfLifeDays);
+        } else {
+            row.dataset.expiryDate = row.dataset.originalExpiryDate;
+        }
+        row.cells[1].textContent = row.dataset.expiryDate;
+        updateDaysUntilExpiry(row);
         console.log("Åbnet:", row.dataset.opened);
     });
 
@@ -199,12 +343,19 @@ addProductForm.addEventListener("submit", (event) => {
 thrownOutCheckbox.type = "checkbox";
 row.cells[4].appendChild(thrownOutCheckbox);
 
-thrownOutCheckbox.addEventListener("change", () => {
+thrownOutCheckbox.addEventListener("change", function () {
     row.dataset.thrownOut = thrownOutCheckbox.checked;
+    if (thrownOutCheckbox.checked) {
+        throwOutDialog.showModal();
+        closeDialogButton.addEventListener("click", function () {
+        throwOutDialog.close();
+});
+    }
 });
 
     addProductDialog.close();
 });
+
 
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {

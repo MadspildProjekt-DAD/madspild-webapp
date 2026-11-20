@@ -6,6 +6,13 @@ main {
     padding: 20px;
 }
 
+.sort-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 section {
     overflow-x: auto;
 }
@@ -41,6 +48,10 @@ dialog fieldset {
 
 dialog video {
     max-width: 100%;
+}
+
+#barcode-video {
+    transform: scaleX(-1);
 }
 
 dialog::backdrop {
@@ -102,6 +113,20 @@ button:hover{
     justify-content: flex-end;
 }
 
+.edit-product {
+    background: transparent;
+    color: rgb(5, 57, 11);
+    padding: 0 0.4rem 0 0;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.edit-product:hover {
+    background: transparent;
+    color: rgb(70, 91, 62);
+}
+
 p{
     text-align: center;
     font-size: 20px; 
@@ -111,4 +136,15 @@ nav a.currentpage {
     border-bottom: 1px solid rgb(204, 218, 201);
     padding-bottom: 2px;
     color: rgb(170, 206, 162);
+}
+.exit{
+    position: absolute;
+    background: none;
+    border: none;
+    top: 8px;
+    right: 10px;
+    font-size: 22px;
+    cursor: pointer;
+    color: rgb(187, 118, 118);
+    line-height: 1;
 }
