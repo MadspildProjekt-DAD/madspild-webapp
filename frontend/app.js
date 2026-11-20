@@ -67,7 +67,6 @@ async function lookupProduct() {
         lookupButton.disabled = false;
     }
 }
-
 async function startBarcodeScanner() {
     if (!navigator.mediaDevices?.getUserMedia) {
         lookupStatus.textContent = "Browseren giver ikke adgang til kameraet. Åbn siden via localhost eller HTTPS, eller indtast stregkoden manuelt.";
