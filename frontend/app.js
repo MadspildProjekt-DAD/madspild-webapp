@@ -215,3 +215,59 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         }
     });
 });
+
+
+js
+// ---------- New: Log ind / Log ud ----------
+const authKnap = document.getElementById('auth-knap');
+
+if (authKnap) { //It only runs on pages that have the button
+  const velkomst = document.getElementById('velkomst');
+  const loginBoks = document.getElementById('login-boks');
+  const loginSend = document.getElementById('login-send');
+  const loginFejl = document.getElementById('login-fejl');
+  let loggetInd = false;
+
+  // Change the button depending on whether or not there is a user.
+  function opdaterKnap(bruger) {
+    loggetInd = !!bruger;
+    authKnap.textContent = loggetInd ? 'Log ud' : 'Log ind';
+    velkomst.textContent = loggetInd ? 'Hej, ' + bruger : '';
+    loginBoks.hidden = true;
+  }
+
+  //Upon opening the page: ask the server whether a session exists
+  fetch('/api/me')
+    .then(svar => svar.json())
+    .then(data => opdaterKnap(data.bruger));
+
+  // Clic in the button at the top
+  authKnap.addEventListener('click', async () => {
+    if (loggetInd) {
+      await fetch('/api/logout', { method: 'POST' });
+      opdaterKnap(null);
+    } else {
+      loginBoks.hidden = !loginBoks.hidden; // muestra/oculta el formulario
+    }
+  });
+
+  // Clic in "Log ind" 
+  loginSend.addEventListener('click', async () => {
+    const svar = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        brugernavn: document.getElementById('brugernavn').value,
+        adgangskode: document.getElementById('adgangskode').value
+      })
+    });
+    const data = await svar.json();
+    if (svar.ok) {
+      loginFejl.textContent = '';
+      opdaterKnap(data.bruger);
+    } else {
+      loginFejl.textContent = data.fejl;
+    }
+  });
+}
+// ---------- END NEW ------
