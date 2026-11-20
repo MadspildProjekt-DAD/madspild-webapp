@@ -1,4 +1,5 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
+const throwOutDialog = document.querySelector("#throw-out-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
@@ -233,8 +234,11 @@ addProductForm.addEventListener("submit", (event) => {
 thrownOutCheckbox.type = "checkbox";
 row.cells[4].appendChild(thrownOutCheckbox);
 
-thrownOutCheckbox.addEventListener("change", () => {
+thrownOutCheckbox.addEventListener("change", function () {
     row.dataset.thrownOut = thrownOutCheckbox.checked;
+    if (thrownOutCheckbox.checked) {
+        throwOutDialog.showModal();
+    }
 });
 
     addProductDialog.close();
