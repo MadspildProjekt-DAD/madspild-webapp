@@ -148,3 +148,18 @@ nav a.currentpage {
     color: rgb(187, 118, 118);
     line-height: 1;
 }
+/* ---------- Log ind-området øverst ---------- */
+#auth-omraade {
+    display: flex;
+    justify-content: flex-end;   /*  Hej og knap t.h. */
+    align-items: center;
+    gap: 15px;                   /*  Mellemrum mellem Hej og knap */
+    padding: 10px 20px;
+}
+
+#velkomst {
+    color: rgb(204, 218, 201);   /* skriftfarve (lysgrøn) */
+    font-size: 24px;             /* skriftsørrelse */
+    font-weight: bold;           /* fed tekst */
+    font-family: Georgia, serif; /* skrifttype */
+}

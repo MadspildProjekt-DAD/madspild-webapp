@@ -17,12 +17,14 @@ app.use(session({
     saveUninitialized: false
 }));
 
-// Muestra las páginas de la carpeta frontend
+// Displays the pages in the frontend folder
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Usuario de prueba (más adelante: base de datos)
+// Test user (hereinafter: database)
 const brugere = [
-    { brugernavn: 'test', adgangskode: '1234' }
+    { brugernavn: 'Cassiopeia', adgangskode: '1234' },
+    { brugernavn: 'Gruppe1',   adgangskode: 'AAU2026' },
+    { brugernavn: 'Sofie' ,  adgangskode: '5678' }
 ];
 // -----------------------------------------------------
 
