@@ -436,28 +436,6 @@ addProductForm.addEventListener("submit", (event) => {
     });
     saveState();
 
-    // "Spist" knap funktion (celle 3)
-    const eatenCheckbox = document.createElement("input");
-    eatenCheckbox.type = "checkbox";
-    row.cells[3].appendChild(eatenCheckbox);
-
-    eatenCheckbox.addEventListener("change", () => {
-        row.dataset.eaten = eatenCheckbox.checked;
-        console.log("Spist:", row.dataset.eaten);
-    });
-
-    // "Smidt Ud" knap funktion (celle 4)
-    const thrownOutCheckbox = document.createElement("input");
-thrownOutCheckbox.type = "checkbox";
-row.cells[4].appendChild(thrownOutCheckbox);
-
-thrownOutCheckbox.addEventListener("change", function () {
-    row.dataset.thrownOut = thrownOutCheckbox.checked;
-    if (thrownOutCheckbox.checked) {
-        throwOutDialog.showModal();
-    }
-});
-
     addProductDialog.close();
 });
 
@@ -473,13 +451,8 @@ document.querySelectorAll(".remove-product").forEach((button) => {
     });
 });
 
-closeDialogButton.addEventListener("click", () => {
-    throwOutDialog.close();
-});
-
 loadState();
 
-js
 // ---------- New: Log ind / Log ud ----------
 const authKnap = document.getElementById('auth-knap');
 
