@@ -424,7 +424,7 @@ addProductForm.addEventListener("submit", (event) => {
         addProductDialog.close();
         return;
     }
-    createProductRow(productList, {
+    const row = createProductRow(productList, {
         barcode: barcodeInput.value.trim(),
         productName: productNameInput.value.trim(),
         originalExpiryDate: expiryDateInput.value,
@@ -435,37 +435,12 @@ addProductForm.addEventListener("submit", (event) => {
         thrownOut: false,
     });
 
-    // "Spist" knap funktion (celle 3)
-    const eatenCheckbox = document.createElement("input");
-    eatenCheckbox.type = "checkbox";
-    row.cells[3].appendChild(eatenCheckbox);
-
-    eatenCheckbox.addEventListener("change", () => {
-        row.dataset.eaten = eatenCheckbox.checked;
-        console.log("Spist:", row.dataset.eaten);
-    });
-
-    // "Smidt Ud" knap funktion (celle 4)
-    const thrownOutCheckbox = document.createElement("input");
-thrownOutCheckbox.type = "checkbox";
-row.cells[4].appendChild(thrownOutCheckbox);
-    
     // Fjern selvvalg produkt funktion
+    const selectCheckbox = document.createElement("input");
+    selectCheckbox.type = "checkbox";
+    selectCheckbox.className = "select-row";
+    row.cells[0].prepend(selectCheckbox);
 
-const selectCheckbox = document.createElement("input");
-selectCheckbox.type = "checkbox";
-selectCheckbox.className = "select-row";
-row.cells[0].prepend(selectCheckbox);
-
-thrownOutCheckbox.addEventListener("change", function () {
-    row.dataset.thrownOut = thrownOutCheckbox.checked;
-    if (thrownOutCheckbox.checked) {
-        throwOutDialog.showModal();
-        closeDialogButton.addEventListener("click", function () {
-        throwOutDialog.close();
-});
-    }
-});
     saveState();
 
     addProductDialog.close();
@@ -480,15 +455,10 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         selected.forEach((checkbox) => {
             checkbox.closest("tr").remove();
         });
+        saveState();
     });
 });
 
-        if (productList.rows.length > 0) {
-            productList.deleteRow(productList.rows.length - 1);
-            saveState();
-        }
-    });
-});
 
 loadState();
 
