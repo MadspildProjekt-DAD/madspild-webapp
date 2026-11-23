@@ -441,7 +441,7 @@ addProductForm.addEventListener("submit", (event) => {
         addProductDialog.close();
         return;
     }
-    createProductRow(productList, {
+    const row = createProductRow(productList, {
         barcode: barcodeInput.value.trim(),
         productName: productNameInput.value.trim(),
         originalExpiryDate: expiryDateInput.value,
@@ -451,6 +451,13 @@ addProductForm.addEventListener("submit", (event) => {
         eaten: false,
         thrownOut: false,
     });
+
+    // Fjern selvvalg produkt funktion
+    const selectCheckbox = document.createElement("input");
+    selectCheckbox.type = "checkbox";
+    selectCheckbox.className = "select-row";
+    row.cells[0].prepend(selectCheckbox);
+
     saveState();
 
     addProductDialog.close();
@@ -468,6 +475,7 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         saveState();
     });
 });
+
 
 loadState();
 
