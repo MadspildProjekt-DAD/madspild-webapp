@@ -148,3 +148,8 @@ nav a.currentpage {
     color: rgb(187, 118, 118);
     line-height: 1;
 }
+.text {
+    font-size: 10px;
+    color: rgb(8, 35, 20);
+    font-style: italic;
+}
