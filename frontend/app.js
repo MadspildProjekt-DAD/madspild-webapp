@@ -1,7 +1,5 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
 const throwOutDialog = document.querySelector("#throw-out-dialog");
-const exitDialogButton = document.querySelector("#exit-dialog");
-const closeDialogButton = document.querySelector("#close-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
@@ -346,13 +344,21 @@ scannerButton.addEventListener("click", () => {
 
     startBarcodeScanner();
 });
+
 addProductDialog.addEventListener("close", () => {
     stopBarcodeScanner();
     editingRow = null;
 });
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
     saveState();
+});
+
+document.querySelectorAll(".exit").forEach((button) => {
+    button.addEventListener("click", () => {
+        button.closest("dialog").close();
+    });
 });
 
 document.querySelectorAll(".add-product").forEach((button) => {
@@ -364,11 +370,7 @@ document.querySelectorAll(".add-product").forEach((button) => {
         addProductDialog.showModal();
        
     });
- exitDialogButton.addEventListener("click", function () {
-        addProductDialog.close();
-        });
 });
-
 
 addProductForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -421,6 +423,28 @@ addProductForm.addEventListener("submit", (event) => {
         thrownOut: false,
     });
     saveState();
+
+    // "Spist" knap funktion (celle 3)
+    const eatenCheckbox = document.createElement("input");
+    eatenCheckbox.type = "checkbox";
+    row.cells[3].appendChild(eatenCheckbox);
+
+    eatenCheckbox.addEventListener("change", () => {
+        row.dataset.eaten = eatenCheckbox.checked;
+        console.log("Spist:", row.dataset.eaten);
+    });
+
+    // "Smidt Ud" knap funktion (celle 4)
+    const thrownOutCheckbox = document.createElement("input");
+thrownOutCheckbox.type = "checkbox";
+row.cells[4].appendChild(thrownOutCheckbox);
+
+thrownOutCheckbox.addEventListener("change", function () {
+    row.dataset.thrownOut = thrownOutCheckbox.checked;
+    if (thrownOutCheckbox.checked) {
+        throwOutDialog.showModal();
+    }
+});
 
     addProductDialog.close();
 });
