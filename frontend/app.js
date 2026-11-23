@@ -342,6 +342,13 @@ addProductForm.addEventListener("submit", (event) => {
     const thrownOutCheckbox = document.createElement("input");
 thrownOutCheckbox.type = "checkbox";
 row.cells[4].appendChild(thrownOutCheckbox);
+    
+    // Fjern selvvalg produkt funktion
+
+const selectCheckbox = document.createElement("input");
+selectCheckbox.type = "checkbox";
+selectCheckbox.className = "select-row";
+row.cells[0].prepend(selectCheckbox);
 
 thrownOutCheckbox.addEventListener("change", function () {
     row.dataset.thrownOut = thrownOutCheckbox.checked;
@@ -356,19 +363,18 @@ thrownOutCheckbox.addEventListener("change", function () {
     addProductDialog.close();
 });
 
-
+    // "-" knap funktion efter markeret produkt man vil fjerne
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {
         const productList = button.closest("section").querySelector("tbody");
+        const selected = productList.querySelectorAll(".select-row:checked");
 
-        if (productList.rows.length > 0) {
-            productList.deleteRow(productList.rows.length - 1);
-        }
+        selected.forEach((checkbox) => {
+            checkbox.closest("tr").remove();
+        });
     });
 });
 
-
-js
 // ---------- New: Log ind / Log ud ----------
 const authKnap = document.getElementById('auth-knap');
 
