@@ -362,6 +362,18 @@ addProductDialog.addEventListener("close", () => {
     editingRow = null;
 });
 
+addProductDialog.addEventListener("click", (event) => {
+    if (event.target === addProductDialog) {
+        addProductDialog.close();
+    }
+});
+
+throwOutDialog.addEventListener("click", (event) => {
+    if (event.target === throwOutDialog) {
+        throwOutDialog.close();
+    }
+});
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
     saveState();
