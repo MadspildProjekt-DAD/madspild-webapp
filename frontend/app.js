@@ -280,7 +280,9 @@ async function startBarcodeScanner() {
         return;
     }
 
-    if (!window.ZXingBrowser?.BrowserMultiFormatReader) {
+    if (!window.ZXingBrowser?.BrowserMultiFormatReader ||
+        !window.ZXing?.DecodeHintType ||
+        !window.ZXing?.BarcodeFormat) {
         lookupStatus.textContent = "Scanneren kunne ikke indlæses. Tjek internetforbindelsen, eller indtast stregkoden manuelt.";
         return;
     }
@@ -291,7 +293,17 @@ async function startBarcodeScanner() {
     lookupStatus.textContent = "Starter kameraet...";
 
     try {
-        const codeReader = new window.ZXingBrowser.BrowserMultiFormatReader();
+        const hints = new Map();
+        hints.set(window.ZXing.DecodeHintType.TRY_HARDER, true);
+        hints.set(window.ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+            window.ZXing.BarcodeFormat.EAN_13,
+            window.ZXing.BarcodeFormat.EAN_8,
+            window.ZXing.BarcodeFormat.UPC_A,
+            window.ZXing.BarcodeFormat.UPC_E,
+        ]);
+
+        const codeReader =
+            new window.ZXingBrowser.BrowserMultiFormatReader(hints);
         const controls = await codeReader.decodeFromConstraints(
             {
                 video: { facingMode: { ideal: "environment" } },
