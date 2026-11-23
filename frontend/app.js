@@ -60,6 +60,11 @@ function createProductRow(productList, product) {
     row.dataset.eaten = String(product.eaten === true);
     row.dataset.thrownOut = String(product.thrownOut === true);
 
+    const selectCheckbox = document.createElement("input");
+    selectCheckbox.type = "checkbox";
+    selectCheckbox.className = "select-row";
+    nameCell.prepend(selectCheckbox);
+
     const editButton = document.createElement("button");
     editButton.type = "button";
     editButton.className = "edit-product";
@@ -362,6 +367,18 @@ addProductDialog.addEventListener("close", () => {
     editingRow = null;
 });
 
+addProductDialog.addEventListener("click", (event) => {
+    if (event.target === addProductDialog) {
+        addProductDialog.close();
+    }
+});
+
+throwOutDialog.addEventListener("click", (event) => {
+    if (event.target === throwOutDialog) {
+        throwOutDialog.close();
+    }
+});
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
     saveState();
@@ -434,44 +451,12 @@ addProductForm.addEventListener("submit", (event) => {
         eaten: false,
         thrownOut: false,
     });
-
-    // "Spist" knap funktion (celle 3)
-    const eatenCheckbox = document.createElement("input");
-    eatenCheckbox.type = "checkbox";
-    row.cells[3].appendChild(eatenCheckbox);
-
-    eatenCheckbox.addEventListener("change", () => {
-        row.dataset.eaten = eatenCheckbox.checked;
-        console.log("Spist:", row.dataset.eaten);
-    });
-
-    // "Smidt Ud" knap funktion (celle 4)
-    const thrownOutCheckbox = document.createElement("input");
-thrownOutCheckbox.type = "checkbox";
-row.cells[4].appendChild(thrownOutCheckbox);
-    
-    // Fjern selvvalg produkt funktion
-
-const selectCheckbox = document.createElement("input");
-selectCheckbox.type = "checkbox";
-selectCheckbox.className = "select-row";
-row.cells[0].prepend(selectCheckbox);
-
-thrownOutCheckbox.addEventListener("change", function () {
-    row.dataset.thrownOut = thrownOutCheckbox.checked;
-    if (thrownOutCheckbox.checked) {
-        throwOutDialog.showModal();
-        closeDialogButton.addEventListener("click", function () {
-        throwOutDialog.close();
-});
-    }
-});
     saveState();
 
     addProductDialog.close();
 });
 
-    // "-" knap funktion efter markeret produkt man vil fjerne
+// "-" knap funktion efter markeret produkt man vil fjerne
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {
         const productList = button.closest("section").querySelector("tbody");
@@ -480,13 +465,7 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         selected.forEach((checkbox) => {
             checkbox.closest("tr").remove();
         });
-    });
-});
-
-        if (productList.rows.length > 0) {
-            productList.deleteRow(productList.rows.length - 1);
-            saveState();
-        }
+        saveState();
     });
 });
 
