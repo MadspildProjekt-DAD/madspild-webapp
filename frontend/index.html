@@ -142,7 +142,7 @@
             </label>
         </fieldset>
         <button type="submit">Godkend</button>
-    <button id="exit-dialog" class="exit" aria-label="Luk">x</button>
+    <button type="button" class="exit" aria-label="Luk">x</button>
     </form>
 </dialog>
 <dialog id="throw-out-dialog" aria-labelledby="throw-out-dialog-heading">
@@ -167,14 +167,14 @@
             Anden årsag
         </label>
         </fieldset>
-         <button type="submit">Smid ud</button>
+        <button type="submit">Smid ud</button>
     </form>
-    <button id="close-dialog" class="exit" aria-label="Luk">x</button>
+    <button type="button" class="exit" aria-label="Luk">x</button>
 </dialog>
+<script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js" defer></script>
 <script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 
-<script src="app.js"></script>
 
 </html>

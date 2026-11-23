@@ -1,7 +1,5 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
 const throwOutDialog = document.querySelector("#throw-out-dialog");
-const exitDialogButton = document.querySelector("#exit-dialog");
-const closeDialogButton = document.querySelector("#close-dialog");
 const addProductForm = document.querySelector("#add-product-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
@@ -23,6 +21,134 @@ let scannerControls;
 let scannerActive = false;
 let editingRow = null;
 const DEFAULT_OPENED_SHELF_LIFE_DAYS = 3;
+const STORAGE_KEY = "madspild-state";
+
+function saveState() {
+    const state = {
+        sortOrder: sortOrderSelect.value,
+        fridge: getStoredProducts(productLists.fridge),
+        freezer: getStoredProducts(productLists.freezer),
+        pantry: getStoredProducts(productLists.pantry),
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function getStoredProducts(productList) {
+    return Array.from(productList.rows).map((row) => ({
+        barcode: row.dataset.barcode || "",
+        productName: row.dataset.productName,
+        originalExpiryDate: row.dataset.originalExpiryDate || "",
+        expiryDate: row.dataset.expiryDate || "",
+        openedShelfLifeDays: row.dataset.openedShelfLifeDays || "",
+        opened: row.dataset.opened === "true",
+        eaten: row.dataset.eaten === "true",
+        thrownOut: row.dataset.thrownOut === "true",
+    }));
+}
+
+function createProductRow(productList, product) {
+    const row = productList.insertRow();
+    const nameCell = row.insertCell();
+
+    row.dataset.barcode = product.barcode || "";
+    row.dataset.productName = product.productName;
+    row.dataset.originalExpiryDate = product.originalExpiryDate || "";
+    row.dataset.expiryDate = product.expiryDate || product.originalExpiryDate || "";
+    row.dataset.openedShelfLifeDays = product.openedShelfLifeDays || "";
+    row.dataset.opened = String(product.opened === true);
+    row.dataset.eaten = String(product.eaten === true);
+    row.dataset.thrownOut = String(product.thrownOut === true);
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "edit-product";
+    editButton.textContent = "✎";
+    editButton.setAttribute("aria-label", `Rediger ${row.dataset.productName}`);
+    editButton.addEventListener("click", () => openProductEditor(row));
+    nameCell.appendChild(editButton);
+
+    const nameText = document.createElement("span");
+    nameText.className = "product-name";
+    nameText.textContent = row.dataset.productName;
+    nameCell.appendChild(nameText);
+
+    for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
+        row.insertCell();
+    }
+
+    row.cells[1].textContent = row.dataset.expiryDate;
+    updateDaysUntilExpiry(row);
+
+    const openedCheckbox = document.createElement("input");
+    openedCheckbox.type = "checkbox";
+    openedCheckbox.checked = product.opened === true;
+    row.cells[2].appendChild(openedCheckbox);
+    openedCheckbox.addEventListener("change", () => {
+        row.dataset.opened = String(openedCheckbox.checked);
+        if (openedCheckbox.checked) {
+            const shelfLifeDays = row.dataset.openedShelfLifeDays === ""
+                ? DEFAULT_OPENED_SHELF_LIFE_DAYS
+                : Number(row.dataset.openedShelfLifeDays);
+            row.dataset.expiryDate = getDateAfterDays(shelfLifeDays);
+        } else {
+            row.dataset.expiryDate = row.dataset.originalExpiryDate;
+        }
+        row.cells[1].textContent = row.dataset.expiryDate;
+        updateDaysUntilExpiry(row);
+        saveState();
+    });
+
+    const eatenCheckbox = document.createElement("input");
+    eatenCheckbox.type = "checkbox";
+    eatenCheckbox.checked = product.eaten === true;
+    row.cells[3].appendChild(eatenCheckbox);
+    eatenCheckbox.addEventListener("change", () => {
+        row.dataset.eaten = String(eatenCheckbox.checked);
+        saveState();
+    });
+
+    const thrownOutCheckbox = document.createElement("input");
+    thrownOutCheckbox.type = "checkbox";
+    thrownOutCheckbox.checked = product.thrownOut === true;
+    row.cells[4].appendChild(thrownOutCheckbox);
+    thrownOutCheckbox.addEventListener("change", () => {
+        row.dataset.thrownOut = String(thrownOutCheckbox.checked);
+        if (thrownOutCheckbox.checked) {
+            throwOutDialog.showModal();
+        }
+        saveState();
+    });
+
+    return row;
+}
+
+function loadState() {
+    try {
+        const savedState = localStorage.getItem(STORAGE_KEY);
+        if (!savedState) {
+            return;
+        }
+
+        const state = JSON.parse(savedState);
+        if (!state || typeof state !== "object") {
+            return;
+        }
+
+        Object.entries(productLists).forEach(([storage, productList]) => {
+            const products = Array.isArray(state[storage]) ? state[storage] : [];
+            products.forEach((product) => createProductRow(productList, product));
+        });
+
+        if (["name", "expiry-asc", "expiry-desc"].includes(state.sortOrder)) {
+            sortOrderSelect.value = state.sortOrder;
+            sortProductTables(state.sortOrder);
+        }
+    } catch (error) {
+        console.error("Kunne ikke indlæse gemt madspildsdata.", error);
+        localStorage.removeItem(STORAGE_KEY);
+    }
+}
 
 function getDateAfterDays(days) {
     const date = new Date();
@@ -154,7 +280,9 @@ async function startBarcodeScanner() {
         return;
     }
 
-    if (!window.ZXingBrowser?.BrowserMultiFormatReader) {
+    if (!window.ZXingBrowser?.BrowserMultiFormatReader ||
+        !window.ZXing?.DecodeHintType ||
+        !window.ZXing?.BarcodeFormat) {
         lookupStatus.textContent = "Scanneren kunne ikke indlæses. Tjek internetforbindelsen, eller indtast stregkoden manuelt.";
         return;
     }
@@ -165,7 +293,17 @@ async function startBarcodeScanner() {
     lookupStatus.textContent = "Starter kameraet...";
 
     try {
-        const codeReader = new window.ZXingBrowser.BrowserMultiFormatReader();
+        const hints = new Map();
+        hints.set(window.ZXing.DecodeHintType.TRY_HARDER, true);
+        hints.set(window.ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+            window.ZXing.BarcodeFormat.EAN_13,
+            window.ZXing.BarcodeFormat.EAN_8,
+            window.ZXing.BarcodeFormat.UPC_A,
+            window.ZXing.BarcodeFormat.UPC_E,
+        ]);
+
+        const codeReader =
+            new window.ZXingBrowser.BrowserMultiFormatReader(hints);
         const controls = await codeReader.decodeFromConstraints(
             {
                 video: { facingMode: { ideal: "environment" } },
@@ -218,12 +356,21 @@ scannerButton.addEventListener("click", () => {
 
     startBarcodeScanner();
 });
+
 addProductDialog.addEventListener("close", () => {
     stopBarcodeScanner();
     editingRow = null;
 });
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
+    saveState();
+});
+
+document.querySelectorAll(".exit").forEach((button) => {
+    button.addEventListener("click", () => {
+        button.closest("dialog").close();
+    });
 });
 
 document.querySelectorAll(".add-product").forEach((button) => {
@@ -235,11 +382,7 @@ document.querySelectorAll(".add-product").forEach((button) => {
         addProductDialog.showModal();
        
     });
- exitDialogButton.addEventListener("click", function () {
-        addProductDialog.close();
-        });
 });
-
 
 addProductForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -257,6 +400,7 @@ addProductForm.addEventListener("submit", (event) => {
             productList.appendChild(row);
         }
 
+        row.dataset.barcode = barcodeInput.value.trim();
         row.dataset.productName = productNameInput.value.trim();
         row.cells[0].querySelector(".product-name").textContent = row.dataset.productName;
         row.cells[0].querySelector(".edit-product").setAttribute(
@@ -274,58 +418,21 @@ addProductForm.addEventListener("submit", (event) => {
             : row.dataset.originalExpiryDate;
         row.cells[1].textContent = row.dataset.expiryDate;
         updateDaysUntilExpiry(row);
+        saveState();
 
         editingRow = null;
         addProductDialog.close();
         return;
     }
-
-    const row = productList.insertRow();
-    const nameCell = row.insertCell();
-    row.dataset.productName = productNameInput.value.trim();
-
-    const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.className = "edit-product";
-    editButton.textContent = "✎";
-    editButton.setAttribute("aria-label", `Rediger ${row.dataset.productName}`);
-    editButton.addEventListener("click", () => openProductEditor(row));
-    nameCell.appendChild(editButton);
-
-    const nameText = document.createElement("span");
-    nameText.className = "product-name";
-    nameText.textContent = row.dataset.productName;
-    nameCell.appendChild(nameText);
-
-    for (let cellIndex = 1; cellIndex < 6; cellIndex += 1) {
-        row.insertCell();
-    }
-    row.dataset.openedShelfLifeDays = new FormData(addProductForm).get("openedShelfLifeDays");
-    row.dataset.originalExpiryDate = expiryDateInput.value;
-    row.dataset.expiryDate = row.dataset.originalExpiryDate;
-    row.cells[1].textContent = row.dataset.expiryDate;
-    updateDaysUntilExpiry(row);
-
-    // "Åbnet" knap funktion (celle 2)
-    const openedCheckbox = document.createElement("input");
-    openedCheckbox.type = "checkbox";
-    row.cells[2].appendChild(openedCheckbox);
-
-    openedCheckbox.addEventListener("change", () => {
-        row.dataset.opened = openedCheckbox.checked;
-        if (openedCheckbox.checked) {
-            // Use the entered days, or the default when the field is blank.
-            const enteredDays = row.dataset.openedShelfLifeDays;
-            const shelfLifeDays = enteredDays === ""
-                ? DEFAULT_OPENED_SHELF_LIFE_DAYS
-                : Number(enteredDays);
-            row.dataset.expiryDate = getDateAfterDays(shelfLifeDays);
-        } else {
-            row.dataset.expiryDate = row.dataset.originalExpiryDate;
-        }
-        row.cells[1].textContent = row.dataset.expiryDate;
-        updateDaysUntilExpiry(row);
-        console.log("Åbnet:", row.dataset.opened);
+    createProductRow(productList, {
+        barcode: barcodeInput.value.trim(),
+        productName: productNameInput.value.trim(),
+        originalExpiryDate: expiryDateInput.value,
+        expiryDate: expiryDateInput.value,
+        openedShelfLifeDays: new FormData(addProductForm).get("openedShelfLifeDays"),
+        opened: false,
+        eaten: false,
+        thrownOut: false,
     });
 
     // "Spist" knap funktion (celle 3)
@@ -359,6 +466,7 @@ thrownOutCheckbox.addEventListener("change", function () {
 });
     }
 });
+    saveState();
 
     addProductDialog.close();
 });
@@ -374,6 +482,15 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         });
     });
 });
+
+        if (productList.rows.length > 0) {
+            productList.deleteRow(productList.rows.length - 1);
+            saveState();
+        }
+    });
+});
+
+loadState();
 
 // ---------- New: Log ind / Log ud ----------
 const authKnap = document.getElementById('auth-knap');
