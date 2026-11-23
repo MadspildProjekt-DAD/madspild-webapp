@@ -397,7 +397,24 @@ document.querySelectorAll(".add-product").forEach((button) => {
         lookupStatus.textContent = "";
         stopBarcodeScanner();
         addProductDialog.showModal();
-       
+
+               // Find den tabel, som "+" knappen hører til
+        const tbody = button.closest("section").querySelector("tbody");
+
+        // Find navnet (fridge, freezer eller pantry) i productLists
+        const storage = Object.keys(productLists).find(
+            (key) => productLists[key] === tbody
+        );
+
+        // Afkryds den radioknap, der passer
+        const radio = addProductForm.querySelector(
+            `input[name="storage"][value="${storage}"]`
+        );
+        if (radio) {
+            radio.checked = true;
+        }
+
+        addProductDialog.showModal();
     });
 });
 
