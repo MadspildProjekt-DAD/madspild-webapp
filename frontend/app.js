@@ -434,15 +434,54 @@ addProductForm.addEventListener("submit", (event) => {
         eaten: false,
         thrownOut: false,
     });
+
+    // "Spist" knap funktion (celle 3)
+    const eatenCheckbox = document.createElement("input");
+    eatenCheckbox.type = "checkbox";
+    row.cells[3].appendChild(eatenCheckbox);
+
+    eatenCheckbox.addEventListener("change", () => {
+        row.dataset.eaten = eatenCheckbox.checked;
+        console.log("Spist:", row.dataset.eaten);
+    });
+
+    // "Smidt Ud" knap funktion (celle 4)
+    const thrownOutCheckbox = document.createElement("input");
+thrownOutCheckbox.type = "checkbox";
+row.cells[4].appendChild(thrownOutCheckbox);
+    
+    // Fjern selvvalg produkt funktion
+
+const selectCheckbox = document.createElement("input");
+selectCheckbox.type = "checkbox";
+selectCheckbox.className = "select-row";
+row.cells[0].prepend(selectCheckbox);
+
+thrownOutCheckbox.addEventListener("change", function () {
+    row.dataset.thrownOut = thrownOutCheckbox.checked;
+    if (thrownOutCheckbox.checked) {
+        throwOutDialog.showModal();
+        closeDialogButton.addEventListener("click", function () {
+        throwOutDialog.close();
+});
+    }
+});
     saveState();
 
     addProductDialog.close();
 });
 
-
+    // "-" knap funktion efter markeret produkt man vil fjerne
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {
         const productList = button.closest("section").querySelector("tbody");
+        const selected = productList.querySelectorAll(".select-row:checked");
+
+        selected.forEach((checkbox) => {
+            checkbox.closest("tr").remove();
+        });
+    });
+});
 
         if (productList.rows.length > 0) {
             productList.deleteRow(productList.rows.length - 1);
