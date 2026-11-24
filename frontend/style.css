@@ -148,6 +148,14 @@ nav a.currentpage {
     color: rgb(187, 118, 118);
     line-height: 1;
 }
+
+.throw-out {
+    background: none;
+    border: none;
+    font-size: 25px;
+    cursor: pointer;
+    color:rgb(0, 0, 0)
+}
 .text {
     font-size: 10px;
     color: rgb(8, 35, 20);
