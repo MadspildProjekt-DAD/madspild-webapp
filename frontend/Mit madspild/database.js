@@ -1,4 +1,5 @@
 const produktDatabase = {
+    
     "4056489406662": {
         navn: "Milbona High Protein Drink 330ml", 
         pris: 20.00
