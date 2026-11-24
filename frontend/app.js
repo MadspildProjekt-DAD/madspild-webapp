@@ -86,6 +86,7 @@ function createProductRow(productList, product) {
     row.cells[1].textContent = row.dataset.expiryDate;
     updateDaysUntilExpiry(row);
 
+    // With the code below, is made for the user can mark their product as opened or eaten
     const openedCheckbox = document.createElement("input");
     openedCheckbox.type = "checkbox";
     openedCheckbox.checked = product.opened === true;
@@ -428,7 +429,7 @@ document.querySelectorAll(".exit").forEach((button) => {
     });
 });
 
-    // Add product button
+    // Add product button function, so the user can add a product to the list
 document.querySelectorAll(".add-product").forEach((button) => {
     button.addEventListener("click", () => {
         addProductForm.reset();
@@ -440,12 +441,12 @@ document.querySelectorAll(".add-product").forEach((button) => {
         // With the code, it gonna find the tabel were the add on belongs to
         const tbody = button.closest("section").querySelector("tbody");
 
-        // Finding the name the storages in productLists (fridge, freezer eller pantry)
+        // Finding the name for storages from the productLists at the top under "const productLists"(fridge, freezer eller pantry)
         const storage = Object.keys(productLists).find(
             (key) => productLists[key] === tbody
         );
 
-        // Afkryds den radioknap, der passer
+        // With this code, does it mark or places the radio dot in the right storage, so the user don't have to do it manually
         const radio = addProductForm.querySelector(
             `input[name="storage"][value="${storage}"]`
         );
