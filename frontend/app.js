@@ -224,6 +224,7 @@ function openProductEditor(row) {
     lookupStatus.textContent = "";
     stopBarcodeScanner();
 
+    barcodeInput.value = row.dataset.barcode;
     productNameInput.value = row.dataset.productName;
     expiryDateInput.value = row.dataset.originalExpiryDate;
     openedShelfLifeInput.value = row.dataset.openedShelfLifeDays;
