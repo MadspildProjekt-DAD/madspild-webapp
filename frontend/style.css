@@ -156,3 +156,8 @@ nav a.currentpage {
     cursor: pointer;
     color:rgb(0, 0, 0)
 }
+.text {
+    font-size: 10px;
+    color: rgb(8, 35, 20);
+    font-style: italic;
+}

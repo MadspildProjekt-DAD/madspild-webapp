@@ -435,7 +435,24 @@ document.querySelectorAll(".add-product").forEach((button) => {
         lookupStatus.textContent = "";
         stopBarcodeScanner();
         addProductDialog.showModal();
-       
+
+               // Find den tabel, som "+" knappen hører til
+        const tbody = button.closest("section").querySelector("tbody");
+
+        // Find navnet (fridge, freezer eller pantry) i productLists
+        const storage = Object.keys(productLists).find(
+            (key) => productLists[key] === tbody
+        );
+
+        // Afkryds den radioknap, der passer
+        const radio = addProductForm.querySelector(
+            `input[name="storage"][value="${storage}"]`
+        );
+        if (radio) {
+            radio.checked = true;
+        }
+
+        addProductDialog.showModal();
     });
 });
 
@@ -479,7 +496,7 @@ addProductForm.addEventListener("submit", (event) => {
         addProductDialog.close();
         return;
     }
-    createProductRow(productList, {
+    const row = createProductRow(productList, {
         barcode: barcodeInput.value.trim(),
         productName: productNameInput.value.trim(),
         originalExpiryDate: expiryDateInput.value,
@@ -488,6 +505,13 @@ addProductForm.addEventListener("submit", (event) => {
         opened: false,
         eaten: false,
     });
+
+    // Fjern selvvalg produkt funktion
+    const selectCheckbox = document.createElement("input");
+    selectCheckbox.type = "checkbox";
+    selectCheckbox.className = "select-row";
+    row.cells[0].prepend(selectCheckbox);
+
     saveState();
 
     addProductDialog.close();
@@ -505,6 +529,7 @@ document.querySelectorAll(".remove-product").forEach((button) => {
         saveState();
     });
 });
+
 
 loadState();
 
