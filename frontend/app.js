@@ -1,6 +1,7 @@
 const addProductDialog = document.querySelector("#add-product-dialog");
-const throwOutDialog = document.querySelector("#throw-out-dialog");
 const addProductForm = document.querySelector("#add-product-form");
+const throwOutDialog = document.querySelector("#throw-out-dialog");
+const throwOutForm = document.querySelector("#throw-out-form");
 const barcodeInput = document.querySelector("#barcode");
 const productNameInput = document.querySelector("#product-name");
 const expiryDateInput = document.querySelector("#product-expiry");
@@ -22,6 +23,8 @@ let scannerActive = false;
 let editingRow = null;
 const DEFAULT_OPENED_SHELF_LIFE_DAYS = 3;
 const STORAGE_KEY = "madspild-state";
+let throwOutRow = null;
+const WASTE_STORAGE_KEY = "madspild-log";
 
 function saveState() {
     const state = {
@@ -43,7 +46,6 @@ function getStoredProducts(productList) {
         openedShelfLifeDays: row.dataset.openedShelfLifeDays || "",
         opened: row.dataset.opened === "true",
         eaten: row.dataset.eaten === "true",
-        thrownOut: row.dataset.thrownOut === "true",
     }));
 }
 
@@ -58,7 +60,6 @@ function createProductRow(productList, product) {
     row.dataset.openedShelfLifeDays = product.openedShelfLifeDays || "";
     row.dataset.opened = String(product.opened === true);
     row.dataset.eaten = String(product.eaten === true);
-    row.dataset.thrownOut = String(product.thrownOut === true);
 
     const selectCheckbox = document.createElement("input");
     selectCheckbox.type = "checkbox";
@@ -113,16 +114,15 @@ function createProductRow(productList, product) {
         saveState();
     });
 
-    const thrownOutCheckbox = document.createElement("input");
-    thrownOutCheckbox.type = "checkbox";
-    thrownOutCheckbox.checked = product.thrownOut === true;
-    row.cells[4].appendChild(thrownOutCheckbox);
-    thrownOutCheckbox.addEventListener("change", () => {
-        row.dataset.thrownOut = String(thrownOutCheckbox.checked);
-        if (thrownOutCheckbox.checked) {
-            throwOutDialog.showModal();
-        }
-        saveState();
+    const throwOutButton = document.createElement("button");
+    throwOutButton.type = "button";
+    throwOutButton.className = "throw-out";
+    throwOutButton.textContent = "🗑";
+    throwOutButton.setAttribute("aria-label", "Smid ud");
+    row.cells[4].appendChild(throwOutButton);
+    throwOutButton.addEventListener("click", () => {
+        throwOutRow = row;
+        throwOutDialog.showModal();
     });
 
     return row;
@@ -153,6 +153,12 @@ function loadState() {
         console.error("Kunne ikke indlæse gemt madspildsdata.", error);
         localStorage.removeItem(STORAGE_KEY);
     }
+}
+
+function logFoodWaste(entry) {
+    const saved = JSON.parse(localStorage.getItem(WASTE_STORAGE_KEY)) || [];
+    saved.push(entry);
+    localStorage.setItem(WASTE_STORAGE_KEY, JSON.stringify(saved));
 }
 
 function getDateAfterDays(days) {
@@ -379,6 +385,38 @@ throwOutDialog.addEventListener("click", (event) => {
     }
 });
 
+throwOutForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (throwOutRow) {
+        const formData = new FormData(throwOutForm);
+        const storage = Object.keys(productLists).find(
+            (key) => productLists[key] === throwOutRow.parentElement
+        );
+
+        logFoodWaste({
+            productName: throwOutRow.dataset.productName,
+            barcode: throwOutRow.dataset.barcode,
+            storage: storage,
+            expiryDate: throwOutRow.dataset.expiryDate,
+            opened: throwOutRow.dataset.opened === "true",
+            reason: formData.get("reason"),
+            amount: Number(formData.get("amount")),
+            thrownOutAt: new Date().toISOString(),
+        });
+
+        throwOutRow.remove();
+        saveState();
+    }
+
+    throwOutDialog.close();
+});
+
+throwOutDialog.addEventListener("close", () => {
+    throwOutForm.reset();
+    throwOutRow = null;
+});
+
 sortProductsButton.addEventListener("click", () => {
     sortProductTables(sortOrderSelect.value);
     saveState();
@@ -449,7 +487,6 @@ addProductForm.addEventListener("submit", (event) => {
         openedShelfLifeDays: new FormData(addProductForm).get("openedShelfLifeDays"),
         opened: false,
         eaten: false,
-        thrownOut: false,
     });
     saveState();
 
