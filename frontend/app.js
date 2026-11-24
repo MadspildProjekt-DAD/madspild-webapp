@@ -428,6 +428,7 @@ document.querySelectorAll(".exit").forEach((button) => {
     });
 });
 
+    // Add product button
 document.querySelectorAll(".add-product").forEach((button) => {
     button.addEventListener("click", () => {
         addProductForm.reset();
@@ -436,10 +437,10 @@ document.querySelectorAll(".add-product").forEach((button) => {
         stopBarcodeScanner();
         addProductDialog.showModal();
 
-               // Find den tabel, som "+" knappen hører til
+        // With the code, it gonna find the tabel were the add on belongs to
         const tbody = button.closest("section").querySelector("tbody");
 
-        // Find navnet (fridge, freezer eller pantry) i productLists
+        // Finding the name the storages in productLists (fridge, freezer eller pantry)
         const storage = Object.keys(productLists).find(
             (key) => productLists[key] === tbody
         );
@@ -506,18 +507,15 @@ addProductForm.addEventListener("submit", (event) => {
         eaten: false,
     });
 
-    // Fjern selvvalg produkt funktion
+    // "Remove" select checkboxfunction
     const selectCheckbox = document.createElement("input");
-    selectCheckbox.type = "checkbox";
-    selectCheckbox.className = "select-row";
-    row.cells[0].prepend(selectCheckbox);
 
     saveState();
 
     addProductDialog.close();
 });
 
-// "-" knap funktion efter markeret produkt man vil fjerne
+    // "Remove" function select item form the list 
 document.querySelectorAll(".remove-product").forEach((button) => {
     button.addEventListener("click", () => {
         const productList = button.closest("section").querySelector("tbody");
