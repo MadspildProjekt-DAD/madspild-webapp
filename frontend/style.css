@@ -169,7 +169,7 @@ nav a.currentpage {
     justify-content: flex-end;   /* 2 boksene og knappen til højre */
     align-items: center;
     gap: 10px;                   /* mellemrummet mellem kasserne */
-    padding: 10px 20px;
+    padding: 0;
 }
 
 /* Den holder boksen skjult, indtil der trykkes på den. "Log ind" */
@@ -195,4 +195,10 @@ nav a.currentpage {
     font-size: 10px;
     color: rgb(8, 35, 20);
     font-style: italic;
+}
+/* Fejlbesked ved forkert login */
+#login-fejl {
+    color: rgb(240, 180, 180);   // forkert brugernavn eller adgangskode" would appear in dark green on dark green and would not be visible.
+    font-size: 15px;
+    margin: 0;
 }

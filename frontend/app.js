@@ -552,6 +552,7 @@ if (authKnap) { //It only runs on pages that have the button
     authKnap.textContent = loggetInd ? 'Log ud' : 'Log ind';
     velkomst.textContent = loggetInd ? 'Hej, ' + bruger : '';
     loginBoks.hidden = true;
+    authKnap.hidden = false;
   }
 
   //Upon opening the page: ask the server whether a session exists
@@ -565,7 +566,8 @@ if (authKnap) { //It only runs on pages that have the button
       await fetch('/api/logout', { method: 'POST' });
       opdaterKnap(null);
     } else {
-      loginBoks.hidden = !loginBoks.hidden; // muestra/oculta el formulario
+    authKnap.hidden = true;    // hides the button above
+    loginBoks.hidden = false; // displays the boxes
     }
   });
 
