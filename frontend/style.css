@@ -163,3 +163,23 @@ nav a.currentpage {
     font-weight: bold;           /* fed tekst */
     font-family: Georgia, serif; /* skrifttype */
 }
+/* ---------- Log ind-boksen ---------- */
+#login-boks {
+    display: flex;
+    justify-content: flex-end;   /* 2 boksene og knappen til højre */
+    align-items: center;
+    gap: 10px;                   /* mellemrummet mellem kasserne */
+    padding: 10px 20px;
+}
+
+/* Den holder boksen skjult, indtil der trykkes på den. "Log ind" */
+#login-boks[hidden] {
+    display: none;
+}
+
+#login-boks input {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgb(70, 91, 62);
+    font-size: 15px;
+}
