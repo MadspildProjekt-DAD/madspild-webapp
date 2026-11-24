@@ -111,6 +111,10 @@ function createProductRow(productList, product) {
     row.cells[3].appendChild(eatenCheckbox);
     eatenCheckbox.addEventListener("change", () => {
         row.dataset.eaten = String(eatenCheckbox.checked);
+        if (eatenCheckbox.checked) {
+            product.eaten = true;
+            row.remove();
+        }
         saveState();
     });
 
