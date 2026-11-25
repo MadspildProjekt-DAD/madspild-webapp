@@ -66,4 +66,22 @@ section {
 
 .intro {
     font-weight: bold;
+    font-size: 30px;
+}
+
+.extraInfo {
+    font-size: 16px;
+    font-style: italic;
+    padding: none;
+    margin: 20px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    line-height: 1.5;
+}
+ .links {
+    line-height: 1.5;
+    margin: 0;
+    padding-left: 20px;
+    font-size: 18px;
+
 }
