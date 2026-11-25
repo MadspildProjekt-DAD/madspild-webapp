@@ -198,7 +198,7 @@ nav a.currentpage {
 }
 /* Fejlbesked ved forkert login */
 #login-fejl {
-    color: rgb(240, 180, 180);   // forkert brugernavn eller adgangskode" would appear in dark green on dark green and would not be visible.
+    color: rgb(240, 180, 180);   /* forkert brugernavn eller adgangskode" would appear in dark green on dark green and would not be visible*/
     font-size: 15px;
     margin: 0;
 }
