@@ -19,9 +19,9 @@ moneyLostText.textContent = totalMoneyLost.toLocaleString("da-DK", {
     });
 
 const reasonLabels = {
-    "too-old": "Udløbsdatoen er overskredet",
-    "dont-like": "Jeg kan ikke lide maden",
-    "spoiled": "Maden er blevet dårlig",
+    "too-old": "Overskredet udløbsdato",
+    "dont-like": "Kunne ikke lide maden",
+    "spoiled": "Maden blev dårlig",
     "other": "Anden årsag",
 };
 
@@ -46,6 +46,8 @@ new Chart(chartCanvas, {
         labels: Object.values(reasonLabels),
         datasets: [{
             data: Object.values(reasonCounts),
+            borderWidth: 2,
+            borderColor: "rgb(180, 203, 166)",
             backgroundColor: [
                 "rgb(184, 45, 78)",
                 "rgb(53, 127, 177)",
@@ -56,11 +58,13 @@ new Chart(chartCanvas, {
 
     },
     options: {
+        aspectRatio: 1.9,
         plugins: {
             legend: {
                 position: "right",
-                labels: { font: { size: 20 } },
-                border: { display: false },  
+                maxWidth: 300,
+                labels: {
+                    font: { size: 15 }, color: "rgb(0,0,0)" },
                 },
             },
         },

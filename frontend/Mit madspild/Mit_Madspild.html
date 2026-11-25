@@ -14,20 +14,30 @@
         <a href="../Gode_Raad.html">Gode Råd</a>
     </nav>
 </header>
-<main> 
+<main>
     <section aria-labelledby="madspild-heading">
-        <h1 id="madspild-heading">Penge du kunne have sparet</h1>
-        <p id="money-lost">0 kr.</p>
+        <h1 id="madspild-heading">Oversigt over dit madspild</h1>
     </section>
+    
+    <div class="madspild-overview">
+        <section aria-labelledby="penge-heading">
+            <h2 id="penge-heading">Penge du kunne have sparet</h2>
+            <p id="money-lost">0 kr.</p>
+            <p id="money-description">Dette er et estimat af hvor mange penge du kunne have sparet ved at undgå madspild.<br>
+                <br>Beløbet er baseret på priserne for de madvarer du har smidt ud,
+                med forbehold for mængden af varen du har smidt ud.</p>
+        </section>
 
-<section aria-labelledby="chart-heading">
-    <h2 id="chart-heading">Dine madspildsvaner</h2>
-    <div class="chart-container">
-        <canvas id="waste-chart"></canvas>
+        <section aria-labelledby="chart-heading">
+            <h2 id="chart-heading">Årsager til madspild</h2>
+            <p id="chart-description">Her kan du få indblik i hvilke årsager der oftest fører til madspild i din husholdning.</p>
+            <div class="chart-container">
+                <canvas id="waste-chart"></canvas>
+            </div>
+        </section>
     </div>
-</section>
-
 </main>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 <script src="database.js" defer></script>
 <script src="mitmadspild.js" defer></script>

@@ -1,17 +1,16 @@
 main {
     display: grid;
-    gap: 2rem;
+    gap: 32px;
     max-width: 1100px;
     margin: 50px auto;
     padding: 20px;
 }
 
-
 body{
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: rgb(180, 203, 166);
-    color: rgb(8, 35, 20)
+    color: rgb(0, 0, 0)
 }
 
 header {
@@ -38,6 +37,8 @@ h1{
     font-size: 36px;
     text-align: center;
     margin-bottom: 10px;
+    margin-top: 0px;
+    text-decoration: underline;
 }
 
 p{
@@ -52,7 +53,46 @@ nav a.currentpage {
 }
 
 .chart-container {
-    /* width: 100%; */
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
+}
+
+#penge-heading {
+    text-align: left;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#money-description {
+    text-align: left;
+    font-size: 15px;
+    font-style: italic;
+}
+
+#money-lost {
+    text-align: left;
+    font-size: 20px;
+    text-decoration:underline;
+    color: rgb(153, 5, 5);
+}
+
+#chart-description {
+    text-align: left;
+    font-size: 17px;
+}
+
+#chart-heading {
+    text-align: left;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.madspild-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+}
+
+.madspild-overview > section {
+    min-width: 0;
 }
