@@ -20,12 +20,16 @@
     </section>
     
     <div class="madspild-overview">
-        <section aria-labelledby="penge-heading">
-            <h2 id="penge-heading">Penge du kunne have sparet</h2>
+        <section aria-labelledby="money-heading">
+            <h2 id="money-heading">Penge du kunne have sparet</h2>
             <p id="money-lost">0 kr.</p>
             <p id="money-description">Dette er et estimat af hvor mange penge du kunne have sparet ved at undgå madspild.<br>
-                <br>Beløbet er baseret på priserne for de madvarer du har smidt ud,
-                med forbehold for mængden af varen du har smidt ud.</p>
+            <br>De samlede beløb er baseret på madvarernes gennemsnitspriser og de mængder, du har smidt ud.</p>
+            <details id="money-details">
+                <summary>Se hvilke madspildsvaner der koster dig flest penge</summary>
+                <p id="money-per-reason-description">Det samlede beløb fordelt på valgte årsager:</p>
+                <ul id="money-per-reason"></ul>
+            </details>
         </section>
 
         <section aria-labelledby="chart-heading">
