@@ -49,8 +49,8 @@ new Chart(chartCanvas, {
         datasets: [{
             data: Object.values(reasonCounts),
             hoverBackgroundColor: [
-                "#4cac3e",
-                "#fc8d19",
+                "#2e8a20",
+                "#e07707",
                 "#a10d09",
                 "#0a305d"
                 ],
@@ -58,10 +58,10 @@ new Chart(chartCanvas, {
             hoverBorderWidth: 2,
             hoverOffset: 8,
             borderWidth: 2,
-            borderColor: "rgb(233, 241, 227)",
+            borderColor: "rgb(244, 246, 243)",
             backgroundColor: [
-                "#4cac3e",
-                "#fc8d19",
+                "#2e8a20",
+                "#e07707",
                 "#a10d09",
                 "#0a305d"
                 ],

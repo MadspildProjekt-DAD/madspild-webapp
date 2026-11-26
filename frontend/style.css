@@ -23,17 +23,40 @@ table {
     overflow: hidden;
 }
 
-th{
-border: 1px solid #d2edd2;
-    padding: 0.5rem;
-    text-align: left;
-    background-color: rgb(70, 91, 62);
-}
-td {
-    border: 1px solid #d2edd2;
+th {
+    border: 1px solid #05390b;
     padding: 0.5rem;
     text-align: left;
     background-color: rgb(147, 167, 138);
+}
+th:nth-child(1) {
+    width: 300px;
+}
+
+th:nth-child(2) {
+    width: 180px;
+}
+
+th:nth-child(3),
+th:nth-child(4),
+th:nth-child(5),
+th:nth-child(6) {
+    width: 110px;
+    text-align: center;
+}
+
+td {
+    border: 1px solid rgba(58, 73, 60, 0.502);
+    padding: 0.5rem;
+    text-align: left;
+    background-color: rgb(244, 246, 243);
+}
+
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5),
+td:nth-child(6) {
+    text-align: center;
 }
 
 dialog form {
@@ -61,13 +84,14 @@ dialog::backdrop {
 body{
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: rgb(180, 203, 166);
+    background-color: rgb(233, 230, 221);
     color: rgb(0, 0, 0)
 }
 
 header {
     background-color: rgb(5, 57, 11);
     padding: 20px;
+    position: relative;
 }
 
 nav{
@@ -77,12 +101,12 @@ nav{
 }
 
 nav a{
-    color: rgb(204, 218, 201);
+    color: rgb(251, 252, 251);
     text-decoration:none;
-    font-size: 17px;
+    font-size: 18px;
 }
 nav a:hover {
-    color: rgb(181, 233, 173);
+    color: rgb(178, 197, 175);
 }
 
 h1{
@@ -93,7 +117,7 @@ h1{
 
 button {/*kig på størrelser*/
     background-color: rgb(11, 78, 11);
-    color: #f8fbf8;
+    color: #ffffff;
     border: none;
     padding: 8px 14px;
     border-radius: 8px;
@@ -103,7 +127,7 @@ button {/*kig på størrelser*/
 }
 
 button:hover{
-    background-color: #2d442d;
+    background-color: #457545;
 }
 
 .buttons{
@@ -133,9 +157,9 @@ p{
 }
 
 nav a.currentpage {
-    border-bottom: 1px solid rgb(204, 218, 201);
+    border-bottom: 1px solid rgb(146, 162, 206);
     padding-bottom: 2px;
-    color: rgb(170, 206, 162);
+    color: rgb(244, 246, 243);
 }
 .exit {
     position: absolute;
@@ -145,30 +169,32 @@ nav a.currentpage {
     right: 10px;
     font-size: 22px;
     cursor: pointer;
-    color: rgb(187, 118, 118);
+    color: rgb(194, 31, 31);
     line-height: 1;
 }
 /* ---------- Log ind-området øverst ---------- */
 #auth-omraade {
+    position: absolute;          
+    right: 20px;                 /*  20px fra højre kant af headeren */
+    top: 50%;                    /*  Øverste kant midt i headeren... */
+    transform: translateY(-50%); /*  ...og flyttes halvdelen af sin egen højde op, så den er centreret */
     display: flex;
-    justify-content: flex-end;   /*  Hej og knap t.h. */
     align-items: center;
     gap: 15px;                   /*  Mellemrum mellem Hej og knap */
-    padding: 10px 20px;
 }
 
 #velkomst {
     color: rgb(204, 218, 201);   /* skriftfarve (lysgrøn) */
-    font-size: 24px;             /* skriftsørrelse */
+    font-size: 2px;             /* skriftsørrelse */
     font-weight: bold;           /* fed tekst */
     font-family: Georgia, serif; /* skrifttype */
 }
-/* ---------- Log ind-boksen ---------- */
+/* ---------- Log ind-boksen og fejlteksten ---------- */
 #login-boks {
-    display: flex;
-    justify-content: flex-end;   /* 2 boksene og knappen til højre */
+    display: grid;
+    justify-content: end;   /* 2 boksene, knappen og fejltekst til højre */
     align-items: center;
-    gap: 10px;                   /* mellemrummet mellem kasserne */
+    gap: 4px;                   /* mellemrummet mellem kasserne og fejltekst */
     padding: 0;
 }
 
@@ -184,21 +210,41 @@ nav a.currentpage {
     font-size: 15px;
 }
 
+.login-felter {
+    display: flex;
+    align-items: center;
+    gap: 10px;                   /* mellemrummet mellem kasserne */
+}
+
 .throw-out {
-    background: none;
+    background: transparent;
     border: none;
-    font-size: 25px;
+    font-size: 26px;
     cursor: pointer;
-    color:rgb(0, 0, 0)
+    color:rgb(0, 0, 0);
+    padding: 0;
+    margin: 0;
+    line-height: 1;
 }
+
+.throw-out:hover {
+    background: transparent;
+    color: rgb(194, 31, 31);
+}
+
 .text {
-    font-size: 10px;
-    color: rgb(8, 35, 20);
+    font-size: 13px;
+    color: rgb(0, 0, 0);
     font-style: italic;
+    text-align: left;
+    margin: -2px 0 15px 26px;
 }
+
 /* Fejlbesked ved forkert login */
 #login-fejl {
-    color: rgb(240, 180, 180);   /* forkert brugernavn eller adgangskode" would appear in dark green on dark green and would not be visible*/
+    color: rgb(194, 31, 31);   /* forkert brugernavn eller adgangskode" would appear in dark green on dark green and would not be visible*/
     font-size: 15px;
-    margin: 0;
+    margin: 0px;
+    padding-left: 3px;
+    text-align: left;            
 }
