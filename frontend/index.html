@@ -7,27 +7,28 @@
 </head>
 <body>
 
-<header id="auth-omraade">
-  <span id="velkomst"></span>
-  <button id="auth-knap">Log ind</button>
-
-<div id="login-boks" hidden>
-  <input id="brugernavn" placeholder="Brugernavn">
-  <input id="adgangskode" type="password" placeholder="Adgangskode">
-  <button id="login-send">Log ind</button>
-  <p id="login-fejl"></p>
-</div>
-</header>
-
 <header>
     <nav>
        
-            <a href="index.html" class="currentpage">Mine Madvarer</a>
-            <a href="Mit madspild/Mit_Madspild.html">Mit Madspild</a>
-            <a href="Gode_Raad.html">Gode Råd</a>
-        
+        <a href="index.html" class="currentpage">Mine Madvarer</a>
+        <a href="Mit madspild/Mit_Madspild.html">Mit Madspild</a>
+        <a href="Gode_Raad.html">Gode Råd</a>
     </nav>
+    <div id="auth-omraade">
+        <span id="velkomst"></span>
+        <button id="auth-knap">Log ind</button>
+    </div>
 </header>
+
+<div id="login-boks" hidden>
+    <div class="login-felter">
+        <input id="brugernavn" placeholder="Brugernavn">
+        <input id="adgangskode" type="password" placeholder="Adgangskode">
+        <button id="login-send">Log ind</button>
+    </div>
+  <p id="login-fejl"></p>
+</div>
+
 <main>
     <div class="sort-controls">
         <label for="sort-order">Sortér efter</label>
@@ -154,17 +155,17 @@
             <input type="radio" name="reason" value="too-old" required>
             Udløbsdatoen er overskredet
         </label>
-            <p class="text">Har du prøvet at se, lugte og smage på maden?</p>
+        <p class="text">Har du prøvet at se, lugte og smage på maden?</p>
         <label>
             <input type="radio" name="reason" value="dont-like">
             Jeg kan ikke lide maden
         </label>
-            <p class="text">Kender du nogen, du kan give maden til?</p>
+        <p class="text">Kender du nogen, du kan give maden til?</p>
         <label>
             <input type="radio" name="reason" value="spoiled">
             Maden er blevet dårlig
         </label>
-            <p class="text">Er du sikker? Prøv at tjekke vores side med gode råd.</p>
+        <p class="text">Er du sikker? Prøv at tjekke vores side med gode råd.</p>
         <label>
             <input type="radio" name="reason" value="other">
             Anden årsag
