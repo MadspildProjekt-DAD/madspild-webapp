@@ -2,7 +2,7 @@ main {
     display: grid;
     gap: 2rem;
     max-width: 1100px;
-    margin: 50px auto;
+    margin: 15px auto 50px;
     padding: 20px;
 }
 
@@ -11,6 +11,7 @@ main {
     justify-content: flex-end;
     align-items: center;
     gap: 0.5rem;
+    margin-right: -180px;
 }
 
 section {
@@ -21,6 +22,7 @@ table {
     border-collapse: collapse;
     width: 100%;
     overflow: hidden;
+    margin-bottom: 50px;
 }
 
 th {
@@ -113,6 +115,7 @@ h1{
     font-size: 36px;
     text-align: center;
     margin-bottom: 10px;
+    margin-top: 0;
 }
 
 button {/*kig på størrelser*/
@@ -153,7 +156,8 @@ button:hover{
 
 p{
     text-align: center;
-    font-size: 20px; 
+    font-size: 20px;
+    margin-bottom: 5px;
 }
 
 nav a.currentpage {
@@ -185,7 +189,7 @@ nav a.currentpage {
 
 #velkomst {
     color: rgb(204, 218, 201);   /* skriftfarve (lysgrøn) */
-    font-size: 2px;             /* skriftsørrelse */
+    font-size: 18px;             /* skriftsørrelse */
     font-weight: bold;           /* fed tekst */
     font-family: Georgia, serif; /* skrifttype */
 }
