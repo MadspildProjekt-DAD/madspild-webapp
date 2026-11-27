@@ -87,12 +87,15 @@ function createProductRow(productList, product) {
     updateDaysUntilExpiry(row);
 
     // With the code below, is made for the user can mark their product as opened or eaten
+
+        // ---------- OPENED FUNCTION ----------
+        // Create a checkbox that the user can tick when the product has been opened.
     const openedCheckbox = document.createElement("input");
     openedCheckbox.type = "checkbox";
-    openedCheckbox.checked = product.opened === true;
-    row.cells[2].appendChild(openedCheckbox);
-    openedCheckbox.addEventListener("change", () => {
-        row.dataset.opened = String(openedCheckbox.checked);
+    openedCheckbox.checked = product.opened === true; // If the product was saved as opened, the box starts ticked.
+    row.cells[2].appendChild(openedCheckbox); // Put the checkbox in the "Åbnet" cell. It has index 2 counts from 0.
+    openedCheckbox.addEventListener("change", () => { // The code inside runs every time the user ticks or unticks the box.
+        row.dataset.opened = String(openedCheckbox.checked); // Save true/false on the row, so the code remembers whether the product is opened.
         if (openedCheckbox.checked) {
             const shelfLifeDays = row.dataset.openedShelfLifeDays === ""
                 ? DEFAULT_OPENED_SHELF_LIFE_DAYS
@@ -106,12 +109,14 @@ function createProductRow(productList, product) {
         saveState();
     });
 
+        // ---------- EATEN FUNCTION ----------
+        // Create a checkbox for "Spist" in the same way as for "Åbnet".
     const eatenCheckbox = document.createElement("input");
     eatenCheckbox.type = "checkbox";
     eatenCheckbox.checked = product.eaten === true;
-    row.cells[3].appendChild(eatenCheckbox);
+    row.cells[3].appendChild(eatenCheckbox); // Put the checkbox in the "Spist" cell, which has index 3
     eatenCheckbox.addEventListener("change", () => {
-        row.dataset.eaten = String(eatenCheckbox.checked);
+        row.dataset.eaten = String(eatenCheckbox.checked);  // The code inside runs every time the user ticks or unticks the box.
         if (eatenCheckbox.checked) {
             product.eaten = true;
             row.remove();
@@ -463,13 +468,14 @@ document.querySelectorAll(".add-product").forEach((button) => {
     });
 });
 
+// Runs when the user submits the "add product" form (presses "Godkend").
 addProductForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+    event.preventDefault(); //stops the browser from reloading the page when the form is submitted. This way our own code can create the product instead, and the page is not reset.
 
-    const storage = new FormData(addProductForm).get("storage");
-    const productList = productLists[storage];
-
-    if (!productList) {
+    const storage = new FormData(addProductForm).get("storage"); // Read which storage radio button is chosen: "fridge", "freezer" or "pantry".
+    const productList = productLists[storage];  // Use that name to find the matching table (the tbody) in productLists.
+    
+    if (!productList) { // Safety check: if no table was found, stop here so the code does not crash.
         return;
     }
 
